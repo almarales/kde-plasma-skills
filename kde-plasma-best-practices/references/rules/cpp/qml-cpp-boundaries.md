@@ -5,7 +5,7 @@ scope: "C++ / QML integration, models, exposed API surface"
 tags: [cpp, qml, architecture, models, integration]
 ---
 
-# QML and C++ boundaries
+# BP-CPP-04 — QML and C++ boundaries
 
 ## Principle
 

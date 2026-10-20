@@ -5,7 +5,7 @@ scope: qml
 tags: [loader, lazy-loading, startup, error-handling]
 ---
 
-# Use Loader deliberately
+# BP-QML-04 — Use Loader deliberately
 
 ## Principle
 

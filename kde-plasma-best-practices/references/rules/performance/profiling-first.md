@@ -5,7 +5,7 @@ scope: cpp, qml, build
 tags: [profiling, performance, evidence]
 ---
 
-# Measure before optimizing
+# BP-PERF-03 — Measure before optimizing
 
 ## Principle
 

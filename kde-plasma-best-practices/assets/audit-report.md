@@ -24,7 +24,7 @@ Use this template to record one audit of Plasma source code: QML, C++, build fil
 | Reviewer | <name or agent identifier> |
 | Review date | `<YYYY-MM-DD>` |
 | Criteria used | `references/audit-criteria.md` |
-| Rules loaded | <rule files selected from `references/rules/_sections.md`> |
+| Rules loaded | <rule IDs selected from `references/rules/_sections.md`> |
 | Out of scope | <files, components, or questions deliberately not audited> |
 
 ## Versions
@@ -72,12 +72,12 @@ An axis that was not inspected is `unverified`, never `pass`.
 
 Severity: `Blocker | Major | Minor | Nit`, taken from the violated rule's `impact` class. Status: `Fail | Unverified` (a finding is never a pass).
 
-| ID | Status | Severity | Location (`file:line`) | Rule | Observed | Expected | Evidence |
+| ID | Status | Severity | Location (`file:line`) | Rule ID | Observed | Expected | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| F1 | `<Fail \| Unverified>` | <severity> | `<path:line>` | `<rules/...md>` | <what happens> | <what should happen> | <command output / file / measurement> |
-| F2 | `<Fail \| Unverified>` | <severity> | `<path:line>` | `<rules/...md>` | <what happens> | <what should happen> | <command output / file / measurement> |
+| F1 | `<Fail \| Unverified>` | <severity> | `<path:line>` | `<BP-QML-04>` | <what happens> | <what should happen> | <command output / file / measurement> |
+| F2 | `<Fail \| Unverified>` | <severity> | `<path:line>` | `<BP-CPP-01>` | <what happens> | <what should happen> | <command output / file / measurement> |
 
-Every finding cites a rule that was loaded. A defect no rule covers is an observation, not a finding.
+Every finding cites a rule that was loaded, by its ID. A defect no rule covers is an observation, not a finding.
 
 ## Observations
 
@@ -140,7 +140,7 @@ The verdict describes the audited revision only. It does not authorize delivery,
 
 ## Sources
 
-- Rule index and impact classes — `references/rules/_sections.md`
+- Rule index, IDs and impact classes — `references/rules/_sections.md`
 - Audit criteria — `references/audit-criteria.md`
 - Sources consulted for this audit — <URL and access date, one per line>
 

@@ -5,7 +5,7 @@ scope: "C++ / Qt object model, QML exposure, plugin and singleton lifetimes"
 tags: [cpp, qt, ownership, lifetime, qobject, qml]
 ---
 
-# QObject ownership and lifetime
+# BP-CPP-01 — QObject ownership and lifetime
 
 ## Principle
 

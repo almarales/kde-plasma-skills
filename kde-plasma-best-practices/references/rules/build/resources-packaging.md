@@ -5,7 +5,7 @@ scope: "Build / Qt resources, QML module packaging, KPackage plasmoids, install 
 tags: [build, resources, kpackage, plasmoid, install, i18n]
 ---
 
-# Resources, QML modules, and package layout
+# BP-BUILD-02 — Resources, QML modules, and package layout
 
 ## Principle
 

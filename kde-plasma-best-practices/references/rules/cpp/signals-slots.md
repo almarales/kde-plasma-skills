@@ -5,7 +5,7 @@ scope: "C++ / Qt signalling, QML signal handlers, cross-thread delivery"
 tags: [cpp, qt, signals, slots, connections, threads]
 ---
 
-# Signal/slot connections and cleanup
+# BP-CPP-02 — Signal/slot connections and cleanup
 
 ## Principle
 

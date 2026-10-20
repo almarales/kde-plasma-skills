@@ -5,7 +5,7 @@ scope: "Architecture / Qt, KF6, Plasma, ECM, CMake minimums"
 tags: [architecture, compatibility, versioning, kde-frameworks, qt, cmake]
 ---
 
-# KDE and Qt API compatibility
+# BP-ARCH-02 — KDE and Qt API compatibility
 
 ## Principle
 

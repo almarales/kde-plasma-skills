@@ -5,7 +5,7 @@ scope: "Testing / Qt Quick Test, offscreen runs, config isolation, DBus"
 tags: [testing, qml, qtquicktest, offscreen, kconfig, dbus]
 ---
 
-# Integration tests for QML and KDE components
+# BP-TEST-02 — Integration tests for QML and KDE components
 
 ## Principle
 

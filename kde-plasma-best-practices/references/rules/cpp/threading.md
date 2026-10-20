@@ -5,7 +5,7 @@ scope: "C++ / Qt threading, QThread, QtConcurrent, QThreadPool, application shut
 tags: [cpp, qt, threading, qthread, concurrency, shutdown]
 ---
 
-# Thread affinity, cancellation, and shutdown
+# BP-CPP-03 — Thread affinity, cancellation, and shutdown
 
 ## Principle
 

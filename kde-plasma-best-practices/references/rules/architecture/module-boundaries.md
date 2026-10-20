@@ -5,7 +5,7 @@ scope: "Architecture / libraries, plugins, plasmoids, KCMs, applications"
 tags: [architecture, plugins, kplugin, kcm, dependencies]
 ---
 
-# Module boundaries and dependency direction
+# BP-ARCH-01 — Module boundaries and dependency direction
 
 ## Principle
 

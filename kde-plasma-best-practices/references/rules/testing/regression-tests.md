@@ -5,7 +5,7 @@ scope: "Testing / bug regression, performance baselines, visual baselines"
 tags: [testing, regression, benchmarks, visual-regression, baselines]
 ---
 
-# Regression tests and baselines
+# BP-TEST-03 — Regression tests and baselines
 
 ## Principle
 

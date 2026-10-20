@@ -8,55 +8,55 @@ Every rule labels substantive claims `[Official]`, `[Observed]`, `[Recommendatio
 
 ## Performance
 
-| Rule | Impact | Tags | Status |
-| --- | --- | --- | --- |
-| [`performance/blocking-gui-thread.md`](performance/blocking-gui-thread.md) | P0 | event-loop, responsiveness, threading | shipped |
-| [`performance/async-work.md`](performance/async-work.md) | P1 | threading, queued-connections, lifetime, cancellation | shipped |
-| [`performance/profiling-first.md`](performance/profiling-first.md) | P1 | profiling, performance, evidence | shipped |
-| [`performance/startup-cost.md`](performance/startup-cost.md) | P2 | startup, lazy-loading, loader, plugins | shipped |
+| ID | Rule | Impact | Tags | Status |
+| --- | --- | --- | --- | --- |
+| `BP-PERF-01` | [`performance/blocking-gui-thread.md`](performance/blocking-gui-thread.md) | P0 | event-loop, responsiveness, threading | shipped |
+| `BP-PERF-02` | [`performance/async-work.md`](performance/async-work.md) | P1 | threading, queued-connections, lifetime, cancellation | shipped |
+| `BP-PERF-03` | [`performance/profiling-first.md`](performance/profiling-first.md) | P1 | profiling, performance, evidence | shipped |
+| `BP-PERF-04` | [`performance/startup-cost.md`](performance/startup-cost.md) | P2 | startup, lazy-loading, loader, plugins | shipped |
 
 ## QML
 
-| Rule | Impact | Tags | Status |
-| --- | --- | --- | --- |
-| [`qml/declarative-bindings.md`](qml/declarative-bindings.md) | P1 | bindings, declarative, qml-performance | shipped |
-| [`qml/binding-overwrites.md`](qml/binding-overwrites.md) | P1 | bindings, debugging, qmllint, state | shipped |
-| [`qml/model-delegates.md`](qml/model-delegates.md) | P1 | models, delegates, listview, performance | shipped |
-| [`qml/loader-usage.md`](qml/loader-usage.md) | P2 | loader, lazy-loading, startup, error-handling | shipped |
-| [`qml/component-reuse.md`](qml/component-reuse.md) | P2 | components, kirigami, api-design, maintainability | shipped |
-| [`qml/timer-lifecycle.md`](qml/timer-lifecycle.md) | P2 | timers, animations, visibility, polling, performance | shipped |
+| ID | Rule | Impact | Tags | Status |
+| --- | --- | --- | --- | --- |
+| `BP-QML-01` | [`qml/declarative-bindings.md`](qml/declarative-bindings.md) | P1 | bindings, declarative, qml-performance | shipped |
+| `BP-QML-02` | [`qml/binding-overwrites.md`](qml/binding-overwrites.md) | P1 | bindings, debugging, qmllint, state | shipped |
+| `BP-QML-03` | [`qml/model-delegates.md`](qml/model-delegates.md) | P1 | models, delegates, listview, performance | shipped |
+| `BP-QML-04` | [`qml/loader-usage.md`](qml/loader-usage.md) | P2 | loader, lazy-loading, startup, error-handling | shipped |
+| `BP-QML-05` | [`qml/component-reuse.md`](qml/component-reuse.md) | P2 | components, kirigami, api-design, maintainability | shipped |
+| `BP-QML-06` | [`qml/timer-lifecycle.md`](qml/timer-lifecycle.md) | P2 | timers, animations, visibility, polling, performance | shipped |
 
 ## C++
 
-| Rule | Impact | Tags | Status |
-| --- | --- | --- | --- |
-| [`cpp/ownership-lifetime.md`](cpp/ownership-lifetime.md) | P0 | cpp, qt, ownership, lifetime, qobject, qml | shipped |
-| [`cpp/signals-slots.md`](cpp/signals-slots.md) | P1 | cpp, qt, signals, slots, connections, threads | shipped |
-| [`cpp/threading.md`](cpp/threading.md) | P0 | cpp, qt, threading, qthread, concurrency, shutdown | shipped |
-| [`cpp/qml-cpp-boundaries.md`](cpp/qml-cpp-boundaries.md) | P1 | cpp, qml, architecture, models, integration | shipped |
+| ID | Rule | Impact | Tags | Status |
+| --- | --- | --- | --- | --- |
+| `BP-CPP-01` | [`cpp/ownership-lifetime.md`](cpp/ownership-lifetime.md) | P0 | cpp, qt, ownership, lifetime, qobject, qml | shipped |
+| `BP-CPP-02` | [`cpp/signals-slots.md`](cpp/signals-slots.md) | P1 | cpp, qt, signals, slots, connections, threads | shipped |
+| `BP-CPP-03` | [`cpp/threading.md`](cpp/threading.md) | P0 | cpp, qt, threading, qthread, concurrency, shutdown | shipped |
+| `BP-CPP-04` | [`cpp/qml-cpp-boundaries.md`](cpp/qml-cpp-boundaries.md) | P1 | cpp, qml, architecture, models, integration | shipped |
 
 ## Architecture
 
-| Rule | Impact | Tags | Status |
-| --- | --- | --- | --- |
-| [`architecture/module-boundaries.md`](architecture/module-boundaries.md) | P1 | architecture, plugins, kplugin, kcm, dependencies | shipped |
-| [`architecture/kde-api-compatibility.md`](architecture/kde-api-compatibility.md) | P1 | architecture, compatibility, versioning, kde-frameworks, qt, cmake | shipped |
+| ID | Rule | Impact | Tags | Status |
+| --- | --- | --- | --- | --- |
+| `BP-ARCH-01` | [`architecture/module-boundaries.md`](architecture/module-boundaries.md) | P1 | architecture, plugins, kplugin, kcm, dependencies | shipped |
+| `BP-ARCH-02` | [`architecture/kde-api-compatibility.md`](architecture/kde-api-compatibility.md) | P1 | architecture, compatibility, versioning, kde-frameworks, qt, cmake | shipped |
 
 ## Build
 
-| Rule | Impact | Tags | Status |
-| --- | --- | --- | --- |
-| [`build/cmake.md`](build/cmake.md) | P2 | build, cmake, ecm, qt6, kf6, qml | shipped |
-| [`build/resources-packaging.md`](build/resources-packaging.md) | P2 | build, resources, kpackage, plasmoid, install, i18n | shipped |
-| [`build/static-analysis.md`](build/static-analysis.md) | P2 | build, static-analysis, qmllint, clazy, clang-tidy, ci | shipped |
+| ID | Rule | Impact | Tags | Status |
+| --- | --- | --- | --- | --- |
+| `BP-BUILD-01` | [`build/cmake.md`](build/cmake.md) | P2 | build, cmake, ecm, qt6, kf6, qml | shipped |
+| `BP-BUILD-02` | [`build/resources-packaging.md`](build/resources-packaging.md) | P2 | build, resources, kpackage, plasmoid, install, i18n | shipped |
+| `BP-BUILD-03` | [`build/static-analysis.md`](build/static-analysis.md) | P2 | build, static-analysis, qmllint, clazy, clang-tidy, ci | shipped |
 
 ## Testing
 
-| Rule | Impact | Tags | Status |
-| --- | --- | --- | --- |
-| [`testing/unit-tests.md`](testing/unit-tests.md) | P1 | testing, qt, qttest, unit-tests, signalspy, ci | shipped |
-| [`testing/integration-tests.md`](testing/integration-tests.md) | P1 | testing, qml, qtquicktest, offscreen, kconfig, dbus | shipped |
-| [`testing/regression-tests.md`](testing/regression-tests.md) | P1 | testing, regression, benchmarks, visual-regression, baselines | shipped |
+| ID | Rule | Impact | Tags | Status |
+| --- | --- | --- | --- | --- |
+| `BP-TEST-01` | [`testing/unit-tests.md`](testing/unit-tests.md) | P1 | testing, qt, qttest, unit-tests, signalspy, ci | shipped |
+| `BP-TEST-02` | [`testing/integration-tests.md`](testing/integration-tests.md) | P1 | testing, qml, qtquicktest, offscreen, kconfig, dbus | shipped |
+| `BP-TEST-03` | [`testing/regression-tests.md`](testing/regression-tests.md) | P1 | testing, regression, benchmarks, visual-regression, baselines | shipped |
 
 ## Adding a rule
 

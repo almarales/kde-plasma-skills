@@ -34,7 +34,7 @@ Required sections, in this order:
 
 | Section | Content |
 | --- | --- |
-| `# Title` | Matches or closely tracks the frontmatter title |
+| `# Title` | `BP-<AREA>-<NN> — <title>`, tracking the frontmatter title |
 | `## Principle` | The rule in one or two sentences, stating the contract |
 | `## Why it matters` | Mechanism and consequence, with labelled evidence |
 | `## Incorrect` | A short counter-example, clearly marked as pseudocode |
@@ -45,6 +45,8 @@ Required sections, in this order:
 | `## Version notes` | Target versions, what changed, what to re-verify |
 
 Length target: 40–90 lines. A rule that needs more is usually two rules.
+
+**Identity.** Every rule carries an ID, and the ID is the prefix of its title: `# BP-QML-04 — Use Loader deliberately`. The scheme is `BP-<AREA>-<NN>`, where the area is `PERF`, `QML`, `CPP`, `ARCH`, `BUILD` or `TEST`. An audit finding, a pull-request comment and a CI baseline all cite it, so an ID is never renumbered and never reused: a retired rule keeps its number retired. New rules take the next free number in their area, which is why the numbering is not necessarily contiguous. `references/rules/_sections.md` is the index that maps an ID to its file, impact and tags.
 
 Every code block is pseudocode unless it is quoted from a build that was actually run. Say so inside the block, in the first comment line. Never present a placeholder as a production-ready implementation.
 
@@ -112,6 +114,7 @@ When a rule becomes wrong for a newer target, do not delete the history: update 
 
 - [ ] Four eligibility tests passed (recurring, actionable, non-duplicative, evidence-backed).
 - [ ] Frontmatter complete: `title`, `impact` in P0–P3, `scope`, `tags`.
+- [ ] The title carries the next free ID for its area (`BP-<AREA>-<NN>`), and no existing ID was renumbered.
 - [ ] All nine sections present, in order.
 - [ ] 40–90 lines.
 - [ ] Each code block marked pseudocode.

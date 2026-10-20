@@ -5,7 +5,7 @@ scope: "QML / repeating timers, animations, polling, hidden or collapsed surface
 tags: [qml, performance, timers, animations, visibility, plasma]
 ---
 
-# Scope timers and animations to visible surfaces
+# BP-QML-06 — Scope timers and animations to visible surfaces
 
 ## Principle
 

@@ -5,9 +5,9 @@ scope: qml
 tags: [topic, topic]
 ---
 
-# Imperative rule title
+# BP-QML-99 — Imperative rule title
 
-> **Template, not a rule.** Copy this file, replace every placeholder, and delete this notice. A rule that still contains placeholder text is not ready to publish. Keep only claims you verified against the target branch.
+> **Template, not a rule.** The ID in the title is the next free number in the rule's area (`BP-<AREA>-<NN>`); an existing ID is never renumbered, because findings cite it. Copy this file, replace every placeholder, and delete this notice. A rule that still contains placeholder text is not ready to publish. Keep only claims you verified against the target branch.
 
 ## Principle
 

@@ -5,7 +5,7 @@ scope: qml
 tags: [bindings, declarative, qml-performance]
 ---
 
-# Keep relationships declarative
+# BP-QML-01 — Keep relationships declarative
 
 ## Principle
 

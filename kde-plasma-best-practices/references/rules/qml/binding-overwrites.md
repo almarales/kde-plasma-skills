@@ -5,7 +5,7 @@ scope: qml
 tags: [bindings, debugging, qmllint, state]
 ---
 
-# Do not overwrite bindings by accident
+# BP-QML-02 — Do not overwrite bindings by accident
 
 ## Principle
 

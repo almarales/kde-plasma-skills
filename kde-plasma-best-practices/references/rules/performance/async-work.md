@@ -5,7 +5,7 @@ scope: cpp, qml
 tags: [threading, queued-connections, lifetime, cancellation]
 ---
 
-# Deliver async results safely to the GUI thread
+# BP-PERF-02 — Deliver async results safely to the GUI thread
 
 ## Principle
 

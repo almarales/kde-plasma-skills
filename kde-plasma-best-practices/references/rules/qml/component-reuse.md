@@ -5,7 +5,7 @@ scope: qml
 tags: [components, kirigami, api-design, maintainability]
 ---
 
-# Reuse before you reimplement
+# BP-QML-05 — Reuse before you reimplement
 
 ## Principle
 

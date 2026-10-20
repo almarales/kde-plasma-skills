@@ -5,7 +5,7 @@ scope: "Build / CMake, ECM, Qt 6 targets, QML modules"
 tags: [build, cmake, ecm, qt6, kf6, qml]
 ---
 
-# CMake structure for Qt and KF6
+# BP-BUILD-01 — CMake structure for Qt and KF6
 
 ## Principle
 

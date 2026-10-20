@@ -5,7 +5,7 @@ scope: qml, cpp, build
 tags: [startup, lazy-loading, loader, plugins]
 ---
 
-# Keep startup work off the first frame
+# BP-PERF-04 — Keep startup work off the first frame
 
 ## Principle
 

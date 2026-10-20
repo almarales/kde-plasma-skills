@@ -10,6 +10,18 @@ Target assumptions: Plasma 6.8.0, Qt 6.11.1, KF6 (ECM 6.31.0), verified 2026-10-
 
 Evidence labels are the ones used across this skill: `[Official]`, `[Observed]`, `[Recommendation]`, `[Experimental]`, `[Unknown]`.
 
+## The rule index
+
+| ID | Rule | Basis |
+| --- | --- | --- |
+| `FWD-01` | Plasma 5 APIs are removed; use their Plasma 6 replacements | `[Official]` porting guide |
+| `FWD-02` | QML module imports are un-versioned | `[Official]` porting guide |
+| `FWD-03` | Private modules are not API | `[Recommendation]` |
+| `FWD-04` | `metadata.json` states the Plasma 6 contract | `[Official]` porting guide |
+| `FWD-05` | Compatibility layers are a waypoint, not a destination | `[Official]` `plasma-development.md` |
+
+`[Recommendation]` These IDs are cited by `scripts/lint_qml.py` and by audit findings, on the same terms as the `BP-*` rule IDs: they are stable, and they are never renumbered or reused.
+
 ## The contract in one line
 
 `[Recommendation]` A widget is forward compatible when everything it depends on is **public API that the distribution documents**, and nothing it depends on is **removed, renamed, versioned, or private** between major releases.

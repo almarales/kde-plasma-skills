@@ -27,10 +27,12 @@ Record these before reading code, because they decide what the audit is allowed 
 | Revision | A finding without a commit SHA cannot be reproduced or re-checked. |
 | Files inspected | The auditable set. Anything else is out of scope by definition. |
 | Files read but not audited | Prevents a reader from assuming a read file was judged. |
-| Rules loaded | The rules selected from `references/rules/_sections.md` by the signals in the change. |
+| Rules loaded | The rules selected from `references/rules/_sections.md` by the signals in the change, listed by ID. |
 | Out of scope | Named explicitly, so a later reader does not treat silence as a pass. |
 
 `[Recommendation]` Load only the rules the change touches, and state which ones were loaded. A rule that was not loaded cannot produce a finding, and a finding with no loaded rule behind it is an observation, not a finding (see severity, below).
+
+`[Recommendation]` Cite a rule by its **ID** (`BP-QML-04`), never by its path. The ID is stable across refactors and renames; the path is not. `references/rules/_sections.md` maps every ID to its file, impact and tags, so a reader can go from `BP-CPP-01` to the rule without guessing a directory layout.
 
 ## The three axes
 
@@ -112,7 +114,7 @@ A finding stays open until it is fixed, or until it is explicitly accepted with 
 ## Audit checklist
 
 - [ ] The revision, the file set, and the out-of-scope items are recorded.
-- [ ] The rules loaded are listed, and every finding cites one of them.
+- [ ] The rules loaded are listed by ID, and every finding cites one of them.
 - [ ] Each of the three axes has a stated outcome, and uninspected axes are `Unverified`.
 - [ ] Every severity comes from a rule's `impact`, or the finding is filed as an observation.
 - [ ] Every finding carries `path:line`, observed, expected, and evidence.

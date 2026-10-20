@@ -5,7 +5,7 @@ scope: cpp, qml
 tags: [event-loop, responsiveness, threading]
 ---
 
-# Never block the GUI thread
+# BP-PERF-01 — Never block the GUI thread
 
 ## Principle
 

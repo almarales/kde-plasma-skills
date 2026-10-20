@@ -5,7 +5,7 @@ scope: "Build / compiler warnings, qmllint, clazy, clang-tidy, CI gates"
 tags: [build, static-analysis, qmllint, clazy, clang-tidy, ci]
 ---
 
-# Static analysis in the build and CI
+# BP-BUILD-03 — Static analysis in the build and CI
 
 ## Principle
 
