@@ -22,6 +22,7 @@ Use this reference as a design and verification requirement for Plasma widgets, 
 
 - [Official] The item with default focus must make sense for the task.
 - [Official] The focused item must look visibly different from selected items in inactive views.
+- [Observed] Official list focus uses the Plasma Style `widgets/listitem` `"pressed"` frame, deliberately not `PlasmaExtras.Highlight`, because that frame indicates keyboard focus only. Reuse it so focus reads as focus and never as selection.
 - [Recommendation] Focus must remain visible against every color scheme and on top of every surface, including popups and overlays.
 - [Recommendation] Do not move focus without a user action. When content appears asynchronously, announce it instead of stealing focus.
 - [Recommendation] Focus indicators need non-text contrast against adjacent colors; a subtle tint is not sufficient.
@@ -38,6 +39,16 @@ Use this reference as a design and verification requirement for Plasma widgets, 
 - [Official] `Accessible.labelledBy` and `Accessible.labelFor` exist since Qt 6.10 for associating labels and controls. Verify availability for the target Qt version.
 - [Official] For Qt Widgets and custom C++ widgets, Qt provides the `QAccessible` class and `QAccessibleInterface` for exposing accessibility information. [Recommendation] Native widgets already implement much of this; custom-painted widgets may need an interface.
 - [Recommendation] When a custom item changes state without a standard property change, emit an accessibility update so assistive technology notices.
+
+### Recipes from official applets
+
+- [Observed] A notification-style delegate reports `Accessible.role: Accessible.Notification`, `Accessible.name` from its title, and `Accessible.description` from its body text.
+- [Observed] Rich body text is `Accessible.ignored: true` when the same content is already exposed through the delegate's `name`/`description`; exposing it twice makes screen readers repeat themselves.
+- [Observed] An icon-only action still sets `text` (consumed by the accessibility layer and by the tooltip), a `ToolTip`, and `Accessible.description` naming the target of the action.
+- [Observed] A checkable control implements `Accessible.onPressAction` so it can be toggled from the keyboard and from assistive technology.
+- [Observed] Tooltips appear only when the text is actually truncated, and they are never the only place a value appears.
+- [Recommendation] For a live monitoring widget, give the compact representation an accessible name that states the state, not just the product name: a screen-reader user should hear the current condition without opening the popup.
+- [Recommendation] Keep `Accessible.name` unique within the window. When several rows repeat the same label, qualify it with the row's subject.
 
 ## Screen readers
 
@@ -111,6 +122,8 @@ Use this reference as a design and verification requirement for Plasma widgets, 
 10. Touch targets meet the chosen minimum in panel, tray, and dialog contexts.
 11. RTL layout and directional icons verified.
 12. Accessible names and messages are translated.
+13. Screen readers do not hear the same content twice: rich text inside a delegate is either exposed once through `name`/`description` or explicitly ignored.
+14. The compact representation announces the current state, not only the product name.
 
 ## Sources
 
@@ -122,6 +135,7 @@ Use this reference as a design and verification requirement for Plasma widgets, 
 - Qt accessibility overview — https://doc.qt.io/qt-6/accessible.html — Accessed: 2026-10-20
 - Qt `QAccessible` class — https://doc.qt.io/qt-6/qaccessible.html — Accessed: 2026-10-20
 - Qt high-DPI scaling — https://doc.qt.io/qt-6/highdpi.html — Accessed: 2026-10-20
+- plasma-workspace notifications applet, branch `Plasma/6.8` (delegate roles, ignored rich body, icon-only actions) — https://invent.kde.org/plasma/plasma-workspace/-/tree/Plasma/6.8/applets/notifications — Accessed: 2026-10-20
 - WCAG 2.2 contrast minimum — https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html — Accessed: 2026-10-20
 - WCAG 2.2 non-text contrast — https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html — Accessed: 2026-10-20
 - WCAG 2.2 target size minimum — https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html — Accessed: 2026-10-20

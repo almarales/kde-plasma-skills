@@ -31,6 +31,31 @@ Use this reference for color, typography, icons, spacing, control states, contra
 - [Recommendation] Test at the user's default size and at an increased system font size. Layout must reflow, not clip or overlap.
 - [Recommendation] Keep line length readable and avoid fixed-width labels for translatable text.
 
+### The heading ladder
+
+[Official] `Kirigami.Heading` multiplies `Theme.defaultFont.pointSize` by its level: L1 ×1.35, L2 ×1.20, L3 ×1.15, L4 ×1.10, L5 ×1.00. `type: Kirigami.Heading.Primary` selects `Font.DemiBold`; the default is `Font.Normal`. The multipliers are Kirigami implementation, not a KDE-approved type scale; verify them for the target KF version.
+
+| Role | Choice |
+|---|---|
+| Popup or page title | `Heading` L1–L2, only when the shell does not draw a heading |
+| Card or list-item title | `Heading` **L4**, `type: Primary`, wraps to at most 3 lines |
+| Metadata (app name, timestamp, origin) | `Heading` **L5**, `opacity: 0.9`, elided |
+| Section header | `Heading` **L5**, `opacity: 0.75`, followed by a separator |
+| Body | `Label` or `Kirigami.SelectableLabel` when the text is selectable |
+| Helper or explanation | `PlasmaExtras.DescriptiveLabel`, `opacity: 0.75` (`0.85` when active) |
+| Anything smaller | `Kirigami.Theme.smallFont` at `opacity: 0.75` |
+
+- [Recommendation] Build hierarchy from **one size step plus opacity**, not from a bespoke six-size scale. A new size is a new token nobody else honors.
+- [Recommendation] Do not invent a "secondary text color". Secondary hierarchy is opacity on the theme text color.
+- [Recommendation] Never use a heading level to solve a layout problem; if a level does not fit, the content is too dense for that surface.
+
+### Numeric text
+
+- [Recommendation] Live numeric values set `font.features: { "tnum": 1 }` for tabular figures. Official monitored-data rows do this explicitly; without it the value column jitters on every refresh.
+- [Recommendation] Right-align value columns, elide them, and reserve a stable width from the formatter so the row does not reflow as digits change.
+- [Recommendation] Keep the unit inside the formatted string and reduce precision before hiding the unit.
+- [Recommendation] De-emphasize supporting figures with `opacity: 0.75`, not with a separate muted color role.
+
 ## Spacing and metrics
 
 - [Official] The HIG documents Kirigami units for consistent spacing: `smallSpacing` between directly related items, `mediumSpacing` between toolbar items, `largeSpacing` between groups and at page edges, `cornerRadius` for rounded elements, and `gridUnit` for fixed-size elements.
@@ -85,6 +110,15 @@ Every interactive control must define all applicable states. A missing state is 
 - [Recommendation] Check translucent or blurred surfaces against multiple wallpapers and color schemes; transparency can destroy contrast even when the base palette is correct.
 - [Recommendation] An alpha channel does not blur anything by itself. KWin blurs only the regions a client declares, and for a widget that is the Plasma theme background frame; a translucent surface over `NoBackground` is translucent *without* blur. For the blurred case, keep the theme background hints and let the card supply only a tint. Verify in a real session: desktop widgets and panel popups do not necessarily behave the same.
 
+## Surface ownership
+
+- [Official] A Plasma applet does not paint its own chrome. It requests the theme frame with `Plasmoid.backgroundHints: PlasmaCore.Types.DefaultBackground | PlasmaCore.Types.ConfigurableBackground` and lets the Plasma Style supply the surface.
+- [Observed] Official applets use **no explicit surface color roles** in their popup content: `PlasmaExtras.Representation` supplies the page, `PlasmaExtras.PlasmoidHeading` supplies the header over `widgets/plasmoidheading`, `KSvg.FrameSvgItem widgets/listitem` supplies the list highlight, `SvgItem widgets/line` supplies separators, and list `ScrollView` sets `background: null`.
+- [Recommendation] Do not paint the popup background, do not stack a full-bleed `Rectangle` as the representation root, and do not reimplement a header the shell already draws.
+- [Recommendation] When content genuinely needs a distinct region, prefer separation first: spacing, `Kirigami.Separator`, or an opaque `Kirigami.Theme.backgroundColor` panel. A card is a last resort, not the default composition unit.
+- [Recommendation] Custom glow, gradient, and drop-shadow effects are incompatible with this grammar. They cannot follow the user's accent or Plasma theme, they encode state in color alone, and they destroy contrast over arbitrary wallpapers. Express emphasis with size, spacing, weight, and opacity instead.
+- [Unknown] Whether a given Plasma theme frame provides blur for a given surface depends on KWin, the containment, and the theme. Verify in a real session; never assume a tint will be blurred.
+
 ## Visual hierarchy
 
 - [Recommendation] Establish one primary action per view, then secondary actions, then destructive actions separated by position and styling.
@@ -104,6 +138,10 @@ Every interactive control must define all applicable states. A missing state is 
 8. Focus is visible and distinct from selection.
 9. No meaning conveyed by color alone.
 10. Layout survives increased font size and display scaling.
+11. The applet requests the theme background and paints no popup surface of its own.
+12. No custom gradient, glow, blur, or drop shadow anywhere in chrome or content cards.
+13. Hierarchy uses the heading ladder plus opacity; no ad-hoc point sizes and no invented muted color.
+14. Live numeric values use tabular figures, right alignment, and a reserved width.
 
 ## Sources
 
@@ -116,6 +154,8 @@ Every interactive control must define all applicable states. A missing state is 
 - Plasma's QML API (BusyIndicator behavior) — https://develop.kde.org/docs/plasma/widget/plasma-qml-api/ — Accessed: 2026-10-20
 - WCAG 2.2 contrast minimum — https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html — Accessed: 2026-10-20
 - WCAG 2.2 non-text contrast — https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html — Accessed: 2026-10-20
+- plasma-workspace notifications applet, branch `Plasma/6.8` (surface, typography, numeric rows) — https://invent.kde.org/plasma/plasma-workspace/-/tree/Plasma/6.8/applets/notifications — Accessed: 2026-10-20
+- Installed `org.kde.plasma.systemmonitor` faces and `PlasmaExtras` primitives, Plasma 6.8.0 — local, Accessed: 2026-10-20
 - KDE API reference (verify roles and imports) — https://api.kde.org/ — Accessed: 2026-10-20
 
 ## Version notes
@@ -125,3 +165,4 @@ Verified against Kirigami documentation and KDE HIG pages as published on 2026-1
 - [Recommendation] Color role names and color-set names have changed across KF major versions. Confirm each name in `https://api.kde.org/` for the target version before writing code.
 - [Official] PlasmaComponents 2 was removed in Plasma 6.0; do not copy imports from Plasma 5 material.
 - [Recommendation] WCAG thresholds are external accessibility guidance, not a KDE requirement. A project may adopt stricter targets.
+- [Recommendation] Heading multipliers are Kirigami implementation details read from source, not a published KDE type scale. Re-read `Heading.qml` for the target KF version before treating the table as fixed.

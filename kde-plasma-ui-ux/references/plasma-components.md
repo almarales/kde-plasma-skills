@@ -35,8 +35,13 @@ Rules:
 - [Recommendation] Keep `main.qml` as composition, not as a monolith. Put representations, configuration UI, and reusable delegates in separate files.
 - [Recommendation] Declare a compact representation that remains legible at panel size, and a full representation that handles the expanded or popup context.
 - [Official] Use `Plasmoid.busy` for shell-level busy indication rather than drawing a second independent spinner over the widget.
+- [Recommendation] Root the full representation in `PlasmaExtras.Representation`, not a bare `Item` with a custom background. `Representation` supplies the page surface, margins from the theme background metrics, and `collapseMarginsHint`; a bare `Item` loses all three and reads as a foreign window.
+- [Recommendation] Give the full representation a `PlasmaExtras.PlasmoidHeading` header. Official applets put toggles and icon-only actions there; `BasicPlasmoidHeading` auto-hides its title when the containment already draws one.
+- [Observed] The system tray merges a third-party applet's header and footer into its own chrome only when the full representation is a `PlasmaComponents3.Page` or `PlasmaExtras.Representation` whose header is a `PlasmoidHeading`. This is the cheapest available native-feel upgrade for a third-party widget.
+- [Recommendation] Drive `Plasmoid.status` from real state (`ActiveStatus` only when the widget has something actionable to say) and keep the symbolic icon in sync. Do not leave a monitoring widget permanently `Active`.
 - [Official] Test with `plasmawindowed <plugin-id>` during development; test in the actual panel and desktop containment before review.
 - [Recommendation] Set the widget id, name, and description in `metadata.json`; remove stale translated names and legacy `metadata.desktop` files when porting.
+- [Recommendation] Treat `metadata.json` as part of the UI contract: a reverse-DNS id you own (never `org.kde.*` for a third-party package), real `Website`, `BugReportUrl`, `X-KDE-Keywords`, `Version`, and a `Messages.sh` plus `po/` when the package ships translations. Incomplete metadata is the first thing a KDE reviewer sees.
 
 ## Panels
 
@@ -50,6 +55,8 @@ Rules:
 
 - [Official] The HIG says to push a new page when content fills the window or view, use `Kirigami.OverlaySheet` for auxiliary read-only narrow content, and reserve dialogs for focused decisions.
 - [Recommendation] Keep popup content sized to its purpose. A popup that scrolls through a full application view should be a page or window instead.
+- [Observed] A workable envelope from the official notifications applet: content width `gridUnit * 18` (`gridUnit * 22` when centred), clamped to at most three times that; minimum edge distance `2 * gridUnit`; maximum vertical use `0.8` of the screen; a body-text cap of 8 lines with a scrollbar only when overflowing. Start there and justify deviations.
+- [Recommendation] Do not make a panel popup behave like a full application viewport. If the content needs persistent navigation across many destinations, reconsider whether it belongs in a popup at all.
 - [Recommendation] Define Escape behavior, the default action, initial focus, and focus return. Do not open a modal dialog for information that can be shown inline.
 - [Recommendation] Avoid stacking popups. If a popup needs another popup, reconsider the structure.
 - [Official] Kirigami documents `Dialog`, `OverlaySheet`, and dialog types as part of its component set; use them before building custom overlays.
@@ -58,6 +65,10 @@ Rules:
 ## System tray
 
 - [Recommendation] A tray item is a plasmoid with a severely constrained compact representation. Prioritize a recognizable symbolic icon and a single clear state.
+- [Observed] In Plasma 6.8, tray discovery is decided by a non-empty `X-Plasma-NotificationAreaCategory` in `metadata.json`; `applets/systemtray/plasmoidregistry.cpp` skips plugins without one. `X-Plasma-NotificationArea` remains documented, so set both, but do not rely on the boolean alone.
+- [Observed] The tray's popup title is the string "Status and Notifications". An applet that declares a tray category appears inside that popup; it does not inject content into it.
+- [Official] The notifications applet exposes no provider registry or page-injection API. The only supported ways for third-party content to appear in that surface are a real `KNotification` (with a `.notifyrc` event) and the D-Bus `org.kde.JobViewServer` / `org.kde.JobViewV2` progress protocol. Do not design around content injection.
+- [Recommendation] Default a tray entry to disabled (`KPlugin.EnabledByDefault: false`) unless the widget's whole purpose is a tray indicator. A duplicate of an existing official indicator is clutter, and the user decides what lives in the tray.
 - [Recommendation] Do not rely on hover tooltips for essential status; tray items are frequently scanned without pointer interaction.
 - [Recommendation] Expose detail and actions through the expanded representation or context menu.
 - [Unknown] Tray-specific status and attention APIs vary by Plasma release. Verify any such property in the target branch and `api.kde.org`; do not infer it from a Plasma 5 example.
@@ -120,6 +131,10 @@ Rules:
 8. KCM was tested in every supported wrapper.
 9. No Plasma 5 import or removed component remains.
 10. Any `[Unknown]` API is resolved or explicitly blocked.
+11. The full representation is a `PlasmaExtras.Representation` with a `PlasmoidHeading`, not a bare `Item` with custom chrome.
+12. Popup sizing sits inside the documented envelope, or the deviation is recorded with a reason.
+13. `Plasmoid.status` and the compact icon reflect real state; the widget is not permanently active.
+14. Metadata is complete and the package id does not squat an `org.kde.*` namespace.
 
 ## Sources
 
@@ -134,6 +149,9 @@ Rules:
 - Kirigami dialog components — https://develop.kde.org/docs/getting-started/kirigami/components-dialogs/ — Accessed: 2026-10-20
 - HIG: displaying content (page, dialog, overlay choice) — https://develop.kde.org/hig/displaying_content/ — Accessed: 2026-10-20
 - KDE API reference — https://api.kde.org/ — Accessed: 2026-10-20
+- plasma-workspace system tray applet, branch `Plasma/6.8` (discovery filter, popup title, header merging) — https://invent.kde.org/plasma/plasma-workspace/-/tree/Plasma/6.8/applets/systemtray — Accessed: 2026-10-20
+- plasma-workspace notifications applet, branch `Plasma/6.8` (popup sizing envelope) — https://invent.kde.org/plasma/plasma-workspace/-/tree/Plasma/6.8/applets/notifications — Accessed: 2026-10-20
+- Installed `org.kde.plasma.systemmonitor` and `org.kde.plasma.vault` on Plasma 6.8.0 — local, Accessed: 2026-10-20
 
 ## Version notes
 

@@ -36,6 +36,7 @@ This skill is community material. It is not affiliated with or endorsed by KDE.
 | `references/design-principles.md` | Principles, evidence hierarchy, decision classes, deviation protocol |
 | `references/visual-consistency.md` | Color, typography, icons, metrics, states, contrast, schemes |
 | `references/plasma-components.md` | Component selection, plasmoids, panels, popups, tray, KCMs, Qt Widgets |
+| `references/official-applet-anatomy.md` | Observed anatomy of official Plasma applets: surfaces, typography ladder, numeric rows, states, motion, popup envelope, tray rules, and testable gates |
 | `references/qt-qml-kirigami.md` | QML/Kirigami implementation mechanics |
 | `references/interaction-patterns.md` | Keyboard, focus, menus, drag/drop, feedback, RTL, motion |
 | `references/accessibility.md` | Accessibility requirements and verification |

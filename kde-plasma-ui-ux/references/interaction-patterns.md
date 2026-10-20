@@ -95,6 +95,8 @@ Use this reference for behavior that visual review cannot catch: keyboard paths,
 ## Empty, loading, and error states
 
 - [Official] Use `Kirigami.PlaceholderMessage` for empty views, with an icon, explanation, and ideally a helpful action.
+- [Observed] The official recipe: icon `round(iconSizes.huge * 1.5)`, `spacing: gridUnit`, `Heading { type: Primary }` for the title, an optional `explanation` label, an optional `helpfulAction` with `Layout.topMargin: gridUnit`, and the whole block at `opacity: 0.75` when `type: Informational`. Width is usually `parent.width - gridUnit * 4`.
+- [Recommendation] One `PlaceholderMessage` component covers empty, unsupported, and error states. Distinguish them by icon and title, not by a bespoke empty card.
 - [Recommendation] Empty states should say what the surface is for and offer the next step. A blank panel with no explanation is a defect.
 - [Recommendation] Loading states should preserve layout, avoid indefinite spinners for known durations, and respect the system animation setting.
 - [Recommendation] Error states should be local to the failure where possible, name the failed object or action, and offer retry, recovery, or a route to support.
@@ -110,6 +112,17 @@ Use this reference for behavior that visual review cannot catch: keyboard paths,
 - [Recommendation] Avoid fixed widths and heights that assume English text length, and allow labels to wrap or elide with a tooltip.
 - [Recommendation] Do not embed text in images or icons.
 
+## Motion
+
+- [Observed] Durations come only from `Kirigami.Units`: `shortDuration` for list highlight movement, `longDuration` for appear and state transitions, plus the semantic `veryShortDuration`/`mediumDuration` where a transition is imperceptible.
+- [Observed] Official easing: `Easing.InOutQuad` for state changes, `Easing.InQuad` for a stack push, `Easing.OutQuad` for a stack pop, `Easing.InExpo` for the appear animation.
+- [Observed] An appearing list item uses `PropertyAction opacity 0` → `PauseAnimation longDuration` → `NumberAnimation longDuration`, so items settle instead of popping.
+- [Observed] When a delegate's height changes, the shift is compensated with an explicit `Translate` plus `NumberAnimation`; `ListView` add/remove transitions misbehave when delegates resize.
+- [Observed] List highlight movement is instant (`highlightMoveDuration: 0`); the highlight follows the keyboard, it does not glide.
+- [Recommendation] Animate opacity, scale, and position only. Never animate the value of a live metric, a chart series, a gauge fill, or a color; repaint them from data.
+- [Recommendation] No looping animation in applets. Use `BusyIndicator` for indeterminate work; it is static when animations are disabled.
+- [Recommendation] Gate decorative motion on the duration role collapsing (`Kirigami.Units.longDuration > 1`) so reduced-motion users are never shown a partial transition.
+
 ## Reduced motion
 
 - [Official] When animations are globally disabled, animated UI must transition instantly or show a static image, such as a static loading spinner.
@@ -117,6 +130,7 @@ Use this reference for behavior that visual review cannot catch: keyboard paths,
 - [Official] Plasma's `BusyIndicator` does not rotate when animation speed is Instant.
 - [Recommendation] Respect the platform animation setting rather than adding an app-specific toggle.
 - [Recommendation] Never use motion as the only signal that something changed.
+- [Recommendation] Test the surface with animations set to Instant: every transition must be instantaneous and every meaning must still be conveyed.
 
 ## Verification pass
 
