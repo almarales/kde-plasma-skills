@@ -62,7 +62,7 @@ Detailed material is loaded on demand.
 ```text
 .                              # this bundle root
 ├── README.md                  # this file
-├── LICENSE                    # Apache-2.0
+├── LICENSE                    # GPL-3.0-or-later
 ├── install.sh                 # install, update, check or remove the bundle
 ├── kde-plasma-ui-ux/
 │   ├── SKILL.md               # activation, rules, routing, output
@@ -217,7 +217,6 @@ rather than deleting the history.
 
 ## License
 
-The skill content in this directory is licensed under the **Apache License 2.0** (see
-`LICENSE`). The rest of the HyaloNet repository remains under its own GPL-3.0 license.
+The skill content in this directory is licensed under the **GNU General Public License, version 3 or later** (see `LICENSE`). The rest of the HyaloNet repository is licensed under the same terms.
 KDE, Plasma, Kirigami, and Breeze are trademarks or projects of their respective owners;
 this bundle claims no affiliation.

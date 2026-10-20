@@ -140,8 +140,8 @@ Do not silently edit version-specific guidance to cover a new release. State the
 
 ## License
 
-The skill text is licensed under Apache-2.0. See `LICENSE` in the skill directory.
+The skill text is licensed under the **GNU General Public License, version 3 or later**. See `LICENSE` in the skill directory.
 
-Apache-2.0 is used for portability with the agent-skill ecosystem. Application code in this repository remains under its own license (GPL-3.0 unless stated otherwise); the skill license does not relicense that code.
+The copyleft terms apply to this skill's text, its references and its templates: anyone who redistributes a modified copy must publish it under the same terms, with the license and the changes marked. Application code in the surrounding repository is not relicensed by this file.
 
 KDE, Plasma, Kirigami, and Breeze are trademarks or project names of their respective owners. This skill is an independent community resource and is not affiliated with or endorsed by KDE.

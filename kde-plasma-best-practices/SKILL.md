@@ -1,7 +1,7 @@
 ---
 name: kde-plasma-best-practices
 description: "Trigger: KDE Plasma code review, QML performance, GUI thread stall, Qt/Kirigami implementation. Apply evidence-based Plasma engineering rules."
-license: Apache-2.0
+license: GPL-3.0-or-later
 metadata:
   author: "Javier Reinaldo Almarales"
   version: "1.0"

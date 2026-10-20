@@ -1,7 +1,7 @@
 ---
 name: kde-plasma-builder
 description: "Trigger: build, scaffold, package, install, test or publish a KDE Plasma 6 widget. From an empty directory to a .plasmoid in the store."
-license: Apache-2.0
+license: GPL-3.0-or-later
 metadata:
   author: "Javier Reinaldo Almarales"
   version: "1.0"

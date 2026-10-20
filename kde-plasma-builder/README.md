@@ -84,6 +84,8 @@ Open an issue or a pull request including the exact file and section, the observ
 
 ## License
 
-The skill text is licensed under **Apache-2.0**. See `LICENSE` in this directory.
+The skill text is licensed under the **GNU General Public License, version 3 or later**. See `LICENSE` in this directory.
+
+The copyleft terms apply to this skill's text, its references and its scaffold: anyone who redistributes a modified copy must publish it under the same terms, with the license and the changes marked.
 
 KDE, Plasma, Kirigami, and Breeze are trademarks or project names of their respective owners. This skill is an independent community resource: it is **not affiliated with, endorsed by, or approved by KDE**.

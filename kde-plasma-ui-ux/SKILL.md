@@ -1,7 +1,7 @@
 ---
 name: kde-plasma-ui-ux
 description: "Trigger: Plasma widget, KCM, panel, system tray, Breeze icons, Kirigami, QML UI, KDE design review. Design and review KDE Plasma interfaces."
-license: Apache-2.0
+license: GPL-3.0-or-later
 metadata:
   author: "Javier Reinaldo Almarales"
   version: "1.0"

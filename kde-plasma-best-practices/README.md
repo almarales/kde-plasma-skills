@@ -177,8 +177,10 @@ Do not silently widen a rule to cover a new release. State the supported version
 
 ## License
 
-The skill text is licensed under **Apache-2.0**. See `LICENSE` in this directory. Apache-2.0 is used for portability with the agent-skill ecosystem; application code in this repository remains under its own license (GPL-3.0 unless stated otherwise), and the skill license does not relicense that code.
+The skill text is licensed under the **GNU General Public License, version 3 or later**. See `LICENSE` in this directory.
 
-`scripts/lint_qml.py` was developed in the `kde-plasma-design` project under LGPL-2.0-or-later and was relicensed to Apache-2.0 by the copyright holder, so that this bundle ships under a single license. The file header records that history.
+The copyleft terms apply to this skill's text, its references, its templates and `scripts/lint_qml.py`: anyone who redistributes a modified copy must publish it under the same terms, with the license and the changes marked. Application code in the surrounding repository is not relicensed by this file.
+
+`scripts/lint_qml.py` was developed in the `kde-plasma-design` project under LGPL-2.0-or-later and was relicensed by the copyright holder to this bundle's license, so that the whole bundle ships under a single license. The file header records that history.
 
 KDE, Plasma, Kirigami, and Breeze are trademarks or project names of their respective owners. This skill is an independent community resource: it is **not affiliated with, endorsed by, or approved by KDE**.
