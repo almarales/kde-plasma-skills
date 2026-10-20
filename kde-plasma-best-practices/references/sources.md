@@ -192,6 +192,15 @@ Added during integration on 2026-10-20 after a full-bundle sweep. Every row was 
 | https://invent.kde.org/plasma/plasma-systemmonitor/-/blob/master/src/page/FacesModel.cpp | kde-plasma-ui-ux/references/configurable-views.md | 200 |
 | https://invent.kde.org/plasma/plasma-systemmonitor/-/blob/master/src/pages/overview.page | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
 | https://invent.kde.org/plasma/plasma-systemmonitor/-/tree/master/src/page | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/CMakeLists.txt | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/faces/FaceLoader.h | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/faces/SensorFaceController.h | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/faces/SensorFace_p.h | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/sensors/Sensor.h | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/plasma-workspace/-/blob/Plasma/6.8/applets/systemmonitor/systemmonitor/package/contents/ui/FullRepresentation.qml | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/plasma-workspace/-/blob/Plasma/6.8/applets/systemmonitor/systemmonitor/package/contents/ui/main.qml | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/plasma-workspace/-/blob/Plasma/6.8/applets/systemmonitor/systemmonitor/systemmonitor.cpp | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/plasma-workspace/-/blob/Plasma/6.8/applets/systemmonitor/systemmonitor/systemmonitor.h | kde-plasma-best-practices/references/plasma-development.md | 200 |
 | https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html | kde-plasma-ui-ux/references/accessibility.md, kde-plasma-ui-ux/references/visual-consistency.md | 200 |
 | https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html | kde-plasma-ui-ux/references/accessibility.md, kde-plasma-ui-ux/references/visual-consistency.md | 200 |
 | https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html | kde-plasma-ui-ux/references/accessibility.md | 200 |

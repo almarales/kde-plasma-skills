@@ -107,7 +107,7 @@ systemctl --user restart plasma-plasmashell.service    # real shell after instal
 2. **UI** — `contents/config/config.qml` declares the configuration pages.
 3. **Runtime access** — the widget reads its settings through the configuration object the Plasma stack provides, not by opening a `KConfig` file directly.
 
-The KDE widget documentation covers the configuration UI and KConfigXT flow `[Official]`. `[Observed]` A `KConfig` object opened without isolation reads the user's real configuration; tests must set `QStandardPaths` test mode or an isolated `HOME` (see `rules/testing/integration-tests.md`).
+The KDE widget documentation covers the configuration UI and KConfigXT flow `[Official]`. `[Observed]` A `KConfig` object opened without isolation reads the user's real configuration; tests must set `QStandardPaths` test mode or an isolated `HOME` (see `references/rules/testing/integration-tests.md`).
 
 `[Official]` Every `main.xml` value is exposed on the config page as a top-level `cfg_<entry>` property. Declare one `property alias cfg_showLabel: showLabel.checked` per key; that indirection is what gives Apply and Discard its transaction. Assigning to `plasmoid.configuration.<key>` from the page instead writes immediately and skips Apply, so pick one model per page rather than mixing them. The official page's samples still use versioned `QtQuick 2.0` and `org.kde.kirigami 2.4` imports; target Plasma 6 uses unversioned imports.
 
@@ -123,7 +123,7 @@ The KDE widget documentation covers the configuration UI and KConfigXT flow `[Of
 
 `[Observed]` KF6 KCoreAddons provides `KPluginFactory` with the `K_PLUGIN_FACTORY`, `K_PLUGIN_FACTORY_DEFINITION`, and `K_PLUGIN_FACTORY_WITH_JSON` macros.
 
-`[Recommendation]` Use a factory plus an interface, and construct through the factory's API rather than by naming a concrete class at the call site. A factory whose result is immediately downcast is a linked dependency with extra steps (see `rules/architecture/module-boundaries.md`).
+`[Recommendation]` Use a factory plus an interface, and construct through the factory's API rather than by naming a concrete class at the call site. A factory whose result is immediately downcast is a linked dependency with extra steps (see `references/rules/architecture/module-boundaries.md`).
 
 ## Pluggable view packages: the System Monitor face architecture
 
@@ -170,6 +170,89 @@ Discovery, declaration, and installation:
 `[Recommendation]` When a plugin-provided view is replaced, check that the new view declares the capabilities the stored configuration assumes. A stored `showLegend` for a view that no longer supports it is silently ignored by the app and looks like a bug in the view.
 
 `[Recommendation]` The whole mechanism is heavier than a widget needs. Reach for it only when the user must choose the rendering, the choice must survive upgrades, and third parties must be able to add views; otherwise ship one rendering and keep the boundary in one file.
+
+## Reusing the System Monitor faces in a plasmoid
+
+`[Official]` The System Monitor ships a Plasma applet that consumes the same face packages, and it is the reference for this task: `org.kde.plasma.systemmonitor` in `plasma-workspace` (`applets/systemmonitor/systemmonitor/`) is a `Plasma::Applet` subclass that owns a `KSysGuard::SensorFaceController` and a QML layer that places the face's own item.
+
+### The constraint that decides the design
+
+`[Official]` Three facts force a C++ backend:
+
+- `KSysGuard::SensorFaceController` is declared `QML_ELEMENT` **and** `QML_UNCREATABLE("It's not possible to create objects of type SensorFaceController")`: QML can see the type and call its methods, but cannot create one (`libksysguard/faces/SensorFaceController.h`).
+- `KSysGuard::SensorFace::setController()` is a C++ setter and is explicitly not writable from QML; the controller is what attaches a face to its data (`libksysguard/faces/SensorFace_p.h`).
+- The QML-instantiable `KSysGuard::FaceLoader` cannot bootstrap: its `setupController()` returns early unless a `parentController` is set and `groupName` is not empty. It exists so that a face can load a child face, not to start a chain (`libksysguard/faces/FaceLoader.cpp → FaceLoader::Private::setupController`).
+
+`[Recommendation]` So a QML-only plasmoid can read the same sensor data, but it cannot mount the face packages. Pick the path that matches the data and the customization the product needs, not the one that is cheaper to ship.
+
+### Path A — reuse the faces (C++ applet)
+
+`[Official]` The upstream applet does this in a few lines (`plasma-workspace applets/systemmonitor/systemmonitor/systemmonitor.cpp`):
+
+```cpp
+// Quoted from upstream, not pseudocode.
+KConfigGroup cg = config();
+m_sensorFaceController = new KSysGuard::SensorFaceController(
+    cg,                                  // the applet's own config group
+    PlasmaQuick::globalEngine().get(),  // the shell's global QML engine
+    new QQmlEngine(this));               // a separate engine for the config UI
+```
+
+and exposes the controller to its own QML (`systemmonitor.h`):
+
+```cpp
+// Quoted from upstream, not pseudocode.
+Q_PROPERTY(KSysGuard::SensorFaceController *faceController READ faceController CONSTANT)
+```
+
+`[Official]` The QML side places the face's item and tells it how much space it has (`package/contents/ui/FullRepresentation.qml`):
+
+```qml
+// Quoted from upstream, not pseudocode.
+contentItem: Plasmoid.faceController.fullRepresentation
+
+Binding {
+    target: Plasmoid.faceController.fullRepresentation
+    property: "formFactor"
+    value: Plasmoid.formFactor === PlasmaCore.Types.Horizontal
+         ? Faces.SensorFace.Horizontal
+         : Faces.SensorFace.Planar
+    restoreMode: Binding.RestoreBinding
+}
+```
+
+`[Official]` The customization comes from the controller, not from new code: `availableFacesModel` (display name plus `pluginId` of every installed face), the writable `faceId`, `faceConfigUi`, `appearanceConfigUi` and `sensorsConfigUi` (each face's own configuration pages), the capability properties `supportsSensorsColors`, `supportsTotalSensors`, `supportsLowPrioritySensors` and `maxTotalSensors`, and the `Q_INVOKABLE` `loadPreset()`, `savePreset()` and `uninstallPreset()`.
+
+`[Official]` Live values for a surface that shows a number instead of a chart come from the sensors module, which is QML-first: `Sensors.Sensor` is a `QML_ELEMENT` exposing `sensorId`, `name`, `shortName`, `unit`, `value`, `formattedValue`, `status` (`Unknown`, `Loading`, `Ready`, `Error`, `Removed`) and a rate-limiting `updateRateLimit` (`libksysguard/sensors/Sensor.h`).
+
+`[Official]` Build integration: `find_package(KSysGuard REQUIRED)`, then link `KSysGuard::SensorFaces` plus `KSysGuard::Sensors` and `KSysGuard::Formatter`. The export is namespaced (`install(EXPORT libksysguardLibraryTargets NAMESPACE KSysGuard::)`) and the headers install to `<includedir>/ksysguard/faces/` (`libksysguard/CMakeLists.txt`).
+
+`[Recommendation]` Three upstream details are worth copying instead of rediscovering:
+
+- **The engine is the shell's.** The face is instantiated in `PlasmaQuick::globalEngine()`, so its QML imports resolve against the shell's import paths. A face built in a private engine is a different animal.
+- **The config group is the applet's own.** The controller reads and writes `config()`, so the selected face, the title, the colours and the sensor list persist with the widget and follow it to another panel.
+- **BUG 424458**: reusing the controller and its item breaks the appearance configuration UI. The applet works around it with `workaroundController(QQuickItem *context)`, which builds a controller bound to the applet's own engine instead of the global one (`plasma-workspace applets/systemmonitor/systemmonitor/systemmonitor.h`).
+
+`[Recommendation]` The applet also reads `CurrentPreset` from its config and calls `loadPreset(preset)`, then rewrites the entry to the root plugin id, so a widget can ship as a preset of the System Monitor and be switched at runtime.
+
+### Path B — QML only: reuse the data, not the faces
+
+`[Official]` Without C++ the sensor layer is still fully available from QML:
+
+- `import org.kde.ksysguard.sensors as Sensors` provides `Sensors.Sensor`.
+- `import org.kde.ksysguard.formatter as Formatter` provides the value formatting the faces themselves use (`Formatter.Formatter.formatValueShowNull(...)`).
+
+`[Recommendation]` With those two plus KQuickCharts you can show system metrics that look and behave like Plasma's, inheriting the rate limiting and the value formatting for free. What you give up is exactly the part a customizable product wants: there is no face picker, no per-face configuration UI, and no presets, because all three live behind `SensorFaceController`. If the customization is the point, Path B does not deliver it.
+
+### Writing a third-party face
+
+`[Official]` A face is a KPackage with the structure `KSysguard/SensorFace`, installed under `…/ksysguard/sensorfaces/<plugin-id>`, whose required files are `ui/FullRepresentation.qml`, `ui/CompactRepresentation.qml` and `faceproperties` (see the package structure above). The QML root derives from the module's `SensorFace` type, whose contract is small: assign the visualization to `contentItem`, read the sensors from `controller`, and honour `formFactor` (`Planar`, `Vertical`, `Horizontal`, `Constrained`).
+
+`[Recommendation]` Declare the capabilities you support in `faceproperties`. An app that cannot ask for a capability the face does not have should not offer the option, and that negotiation is what lets a third-party face behave like a first-party one instead of becoming a special case in the app.
+
+### Limits
+
+`[Recommendation]` The faces render KSysGuard sensors. If the plasmoid shows its own domain data, reuse the *pattern* — a KPackage per visualization, capability negotiation, per-view configuration — and write the views on KQuickCharts; the face packages themselves do not apply.
 
 ## Version matrix
 

@@ -36,7 +36,7 @@ Not for non-Qt code or uninspected approvals.
 | New or forked QML control | `qml/component-reuse.md` |
 | Repeating timer or animation while hidden | `qml/timer-lifecycle.md` |
 | C++, ownership, threads, shutdown | `cpp/` rules in `references/rules/_sections.md` |
-| Pluggable views, plugin-provided renderings, KPackage structures | `references/plasma-development.md` |
+| Pluggable views, plugin-provided renderings, KPackage structures, reusing OS components in a plasmoid | `references/plasma-development.md` |
 | A formal audit with a written verdict | `references/audit-criteria.md`, `assets/audit-report.md` |
 
 Bare paths are relative to `references/rules/`; `references/…` and `assets/…` are relative to this skill's root.

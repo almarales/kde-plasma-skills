@@ -4,7 +4,7 @@
 
 Use this reference when an application must let the user choose **how a datum is presented** — a line chart, a pie chart, a table, a text row — and keep that choice across sessions. The evidence base is the System Monitor (`plasma-systemmonitor`) and the face library it shares with `libksysguard`: the first-party Plasma surface where a rendered item is a separately installable plugin.
 
-This file covers the **design contract**: what the app owns, what the pluggable view owns, what the user is offered, and what the user must never be shown. The plugin plumbing (KPackage structures, C++ instantiation, config groups) is in `../kde-plasma-best-practices/references/plasma-development.md`; the visual grammar the views must obey is in `official-applet-anatomy.md`.
+This file covers the **design contract**: what the app owns, what the pluggable view owns, what the user is offered, and what the user must never be shown. The plugin plumbing (KPackage structures, C++ instantiation, config groups) and the recipe for mounting these views inside a plasmoid are in `../kde-plasma-best-practices/references/plasma-development.md`; the visual grammar the views must obey is in `official-applet-anatomy.md`.
 
 Evidence base, inspected on 2026-10-20 against upstream `master` (Plasma 6.8 era). Upstream code is cited as `repository/path → symbol`; line numbers were not captured in this pass, so re-open the file before quoting a line.
 
