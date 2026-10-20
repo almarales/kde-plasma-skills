@@ -64,18 +64,22 @@ Detailed material is loaded on demand.
 │   ├── LICENSE
 │   ├── references/            # design principles, visual consistency,
 │   │                          # components, QML/Kirigami, interaction,
-│   │                          # accessibility, future proposals, review
+│   │                          # accessibility, configurable views,
+│   │                          # future proposals, review
 │   └── assets/                # design-proposal and ui-review templates
 └── kde-plasma-best-practices/
     ├── SKILL.md
     ├── README.md
     ├── LICENSE
+    ├── assets/
+    │   └── audit-report.md    # template for a written audit with a verdict
     └── references/
         ├── rules/             # P0-P3 rule catalog (performance, qml, cpp,
         │                      # architecture, build, testing)
         ├── qt-quick-performance.md
         ├── plasma-development.md
         ├── rule-authoring.md
+        ├── audit-criteria.md  # audit scope, severity, required checks, verdicts
         └── sources.md
 ```
 
@@ -115,6 +119,8 @@ their `description` triggers. Example prompts:
 - "Audit this QML for binding overwrites and delegate cost."
 - "This panel animation stutters; find the GUI-thread or binding cause."
 - "Review this C++/QML boundary for ownership and lifetime bugs."
+- "Audit this change and give me a written verdict with the open findings."
+- "Let the user pick how each metric is drawn, and keep that choice across sessions."
 - "Evaluate this Plasma 7 concept without treating it as official."
 
 ## Validation

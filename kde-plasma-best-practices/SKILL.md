@@ -24,7 +24,7 @@ Not for non-Qt code or uninspected approvals.
 
 ## Decision Gates
 
-| Signal in the change | Load (relative to `references/rules/`) |
+| Signal in the change | Load |
 | --- | --- |
 | Frozen UI, jank, "not responding" | `performance/blocking-gui-thread.md` |
 | Background work, results, cancellation | `performance/async-work.md` |
@@ -36,6 +36,10 @@ Not for non-Qt code or uninspected approvals.
 | New or forked QML control | `qml/component-reuse.md` |
 | Repeating timer or animation while hidden | `qml/timer-lifecycle.md` |
 | C++, ownership, threads, shutdown | `cpp/` rules in `references/rules/_sections.md` |
+| Pluggable views, plugin-provided renderings, KPackage structures | `references/plasma-development.md` |
+| A formal audit with a written verdict | `references/audit-criteria.md`, `assets/audit-report.md` |
+
+Bare paths are relative to `references/rules/`; `references/…` and `assets/…` are relative to this skill's root.
 
 ## Execution Steps
 
@@ -54,6 +58,8 @@ Return:
 - Measurements: exact command, environment, before and after.
 - Trade-offs accepted and checks still unverified.
 
+A formal audit is written with `assets/audit-report.md` and follows `references/audit-criteria.md`: the severity of a finding is the violated rule's `impact`, the verdict is `pass`, `fail`, or `inconclusive`, and an audit without inspected evidence is `inconclusive`, never a pass.
+
 ## References
 
 - `references/rules/_sections.md` — rule index by area, impact, and tags.
@@ -65,3 +71,5 @@ Return:
 - `references/rules/build/` — CMake, resources/packaging, static analysis.
 - `references/rules/testing/` — unit, integration, and regression tests.
 - `references/qt-quick-performance.md`, `references/plasma-development.md`, `references/rule-authoring.md`, `references/sources.md` — syntheses and verified source ledger.
+- `references/audit-criteria.md` — audit scope, severity derivation, required checks, verdict rules.
+- `assets/audit-report.md` — the template for a written audit with a verdict.

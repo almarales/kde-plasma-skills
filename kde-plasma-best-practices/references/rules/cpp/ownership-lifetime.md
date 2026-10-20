@@ -72,7 +72,7 @@ public:
 
 - [ ] Every `new` QObject has a stated owner whose lifetime matches the intended scope; repeated setup does not accumulate children on a long-lived parent.
 - [ ] Every QObject returned from a `Q_INVOKABLE` is parented or explicitly marked `CppOwnership`.
-- [ ] `delete` does not appear where `deleteLater()` is required (cross-thread, in a slot, in a signal path).
+- [ ] `delete` does not appear where `deleteLater()` is required (cross-thread, in a slot, in a signal path), and a QML-visible component is released only after its replacement exists (`references/plasma-development.md` records the upstream pattern).
 - [ ] Cross-object references use `QPointer`; QML-facing types are registered instead of injected as context properties, and required data never comes from an unchecked `QObject::property("name")`.
 - [ ] Singletons and services state whether they outlive the engine.
 

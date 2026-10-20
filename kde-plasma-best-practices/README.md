@@ -40,9 +40,11 @@ Non-goals:
 | `references/rules/build/` | CMake/ECM, resources and packaging, static analysis |
 | `references/rules/testing/` | Unit, integration, and regression tests |
 | [`references/qt-quick-performance.md`](references/qt-quick-performance.md) | Labelled synthesis of Qt's Qt Quick performance guidance |
-| [`references/plasma-development.md`](references/plasma-development.md) | Plasma 6 architecture, imports, `metadata.json`, version matrix |
+| [`references/plasma-development.md`](references/plasma-development.md) | Plasma 6 architecture, imports, `metadata.json`, version matrix, pluggable view packages |
 | [`references/rule-authoring.md`](references/rule-authoring.md) | Eligibility test, evidence labels, merge/split/discard policy |
+| [`references/audit-criteria.md`](references/audit-criteria.md) | Audit scope, severity derivation, required checks, verdict rules |
 | [`references/sources.md`](references/sources.md) | Every cited URL with status and access date, plus local observations |
+| [`assets/audit-report.md`](assets/audit-report.md) | Template for a written audit with a verdict |
 
 ## Rule catalog at a glance
 
@@ -60,6 +62,20 @@ Non-goals:
 **Priority caveat:** P0–P3 are this catalog's prioritization convention, not an official KDE taxonomy. P0 means a responsiveness, correctness, or resource-safety break in normal use; P1 a major architectural, lifecycle, or performance concern; P2 a recurring inefficiency or maintainability issue with a local fix; P3 low-impact consistency or cleanup. No rule currently uses P3. Assign by expected impact, not by how alarming the example looks.
 
 Every rule follows the same nine-section shape (`Principle`, `Why it matters`, `Incorrect`, `Preferred`, `Exceptions and trade-offs`, `Review checklist`, `References`, `Version notes`, plus the title) and stays within 40–90 lines. Code blocks are pseudocode unless they quote a build that was actually run.
+
+## Formal audits
+
+The skill produces two kinds of output. A **review** is a conversational answer: the rules that applied, the findings, the measurements, the accepted trade-offs. An **audit** is a written document with a verdict, for a change that needs a reviewable record.
+
+An audit follows `references/audit-criteria.md` and is written with `assets/audit-report.md`:
+
+- It is scoped to an exact revision and file set, and says what was out of scope.
+- It states an outcome on three axes — correctness, performance, maintainability — and marks an axis that was not inspected as `Unverified`.
+- Every finding cites a rule from the catalog, and its severity **is** that rule's `impact` class: `P0` is a `Blocker`, `P1` a `Major`, `P2` a `Minor`, `P3` a `Nit`. A defect no rule covers is an observation, not a finding.
+- Every executed check reports the exact command and its observed result; the checks that could not run are listed with the evidence that would close them.
+- The verdict is `pass`, `fail`, or `inconclusive`, using the same vocabulary as the UI review skill. An audit without inspected evidence is always `inconclusive`.
+
+The verdict describes the audited revision. It does not authorize delivery, and it does not judge the author.
 
 ## Install and activation
 

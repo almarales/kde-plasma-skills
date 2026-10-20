@@ -40,6 +40,7 @@ Target baseline: Plasma 6.8.0, Qt 6.11.1, KF6 (local, 2026-10-20). Verify agains
 | Principles, evidence hierarchy, deviations | `references/design-principles.md` |
 | Color, typography, icons, metrics, states, contrast | `references/visual-consistency.md` |
 | Component order, plasmoid/KCM/tray/dialog structure | `references/plasma-components.md` |
+| User-selectable renderings, pluggable views, editable layouts | `references/configurable-views.md` |
 | What official applets actually do, with metrics and source citations | `references/official-applet-anatomy.md` |
 | Keyboard, focus, menus, drag/drop, feedback, RTL, accessibility | `references/interaction-patterns.md`, `references/accessibility.md` |
 | QML/Kirigami implementation mechanics | `references/qt-qml-kirigami.md` |
@@ -63,6 +64,6 @@ Return: outcome; an evidence label per claim; files changed; component and theme
 
 ## References
 
-- `references/`: design-principles, visual-consistency, plasma-components, official-applet-anatomy, qt-qml-kirigami, interaction-patterns, accessibility, plasma-future-proposals, review-checklist
+- `references/`: design-principles, visual-consistency, plasma-components, official-applet-anatomy, configurable-views, qt-qml-kirigami, interaction-patterns, accessibility, plasma-future-proposals, review-checklist
 - `assets/design-proposal.md`, `assets/ui-review.md`
 - `../kde-plasma-best-practices/SKILL.md` — engineering rules; do not duplicate them here.

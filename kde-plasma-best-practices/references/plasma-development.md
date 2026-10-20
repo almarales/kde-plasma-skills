@@ -125,6 +125,52 @@ The KDE widget documentation covers the configuration UI and KConfigXT flow `[Of
 
 `[Recommendation]` Use a factory plus an interface, and construct through the factory's API rather than by naming a concrete class at the call site. A factory whose result is immediately downcast is a linked dependency with extra steps (see `rules/architecture/module-boundaries.md`).
 
+## Pluggable view packages: the System Monitor face architecture
+
+`[Official]` The System Monitor is the first-party Plasma surface where a rendered item is itself an installable plugin. It is the reference implementation for "the user picks how a datum is drawn", and its mechanism is KPackage, not a C++ factory.
+
+Discovery, declaration, and installation:
+
+- A view is a KPackage whose structure is `KSysguard/SensorFace`, declared in its `metadata.json` as `"KPackageStructure": "KSysguard/SensorFace"` with a `KPlugin` object; the shipped line chart declares `"Id": "org.kde.ksysguard.linechart"`, `"Icon": "office-chart-line"`, and `"Version": "1.0"` (`libksysguard/faces/facepackages/linechart/metadata.json`).
+- The id prefix is `org.kde.ksysguard.<view>`; the library ships `barchart`, `colorgrid`, `facegrid`, `horizontalbars`, `linechart`, `piechart`, and `textonly` (`libksysguard/faces/facepackages/`), and the application ships `applicationstable` and `processtable` itself (`plasma-systemmonitor/src/faces/CMakeLists.txt`).
+- Installation is `kpackage_install_package(<dir> <plugin-id> sensorfaces ksysguard)`, so views land in `…/ksysguard/sensorfaces/<plugin-id>` (`plasma-systemmonitor/src/faces/CMakeLists.txt`).
+- A view package holds `metadata.json` plus `contents/ui/` (`FullRepresentation.qml`, `CompactRepresentation.qml`, `Config.qml`), `contents/config/`, and `contents/faceproperties` (`libksysguard/faces/facepackages/linechart/contents/`).
+- The file names are not conventional: the structure is a **custom `KPackage::PackageStructure` subclass** (`SensorFacePackage`) that maps logical names to paths and marks three of them required — `CompactRepresentation` → `ui/CompactRepresentation.qml`, `FullRepresentation` → `ui/FullRepresentation.qml`, and `FaceProperties` → `faceproperties` — with `ConfigUI` → `ui/Config.qml` and `mainconfigxml` → `config/main.xml` optional, and the default package root set to `ksysguard/sensorfaces` (`libksysguard/faces/packagestructure/sensorfacepackage.cpp`).
+
+`[Official]` The supporting library is a separate QML module, not a namespace of the application: `ecm_add_qml_module(SensorFaces URI "org.kde.ksysguard.faces" VERSION 1.0 …)`, with a private companion `org.kde.ksysguard.faces.private`; the target is `KSysGuard::SensorFaces` (library `KSysGuardSensorFaces`), its headers install to `<includedir>/ksysguard/faces`, and its logging category is `org.kde.libksysguard.faces` (`libksysguard/faces/CMakeLists.txt`).
+
+`[Official]` Both the application and the views import that module: `import org.kde.ksysguard.faces as Faces`. The module provides the base type the views derive from (`Faces.AbstractSensorFace`, which exposes the app-owned `controller` to the view's QML) and the space hint the host sets before showing a view (`Faces.SensorFace.Constrained`) (`libksysguard/faces/import/SensorFace.qml`, `plasma-systemmonitor/src/page/FaceControl.qml`).
+
+`[Official]` The host swaps the view in place by reassigning the container's content item — `control.contentItem = loader.controller.fullRepresentation` — and repeats it when `faceIdChanged` fires; the host also forwards `missingSensorsChanged` so the app, not the view, decides how to report unresolvable sensors (`plasma-systemmonitor/src/page/FaceControl.qml → FaceControl.updateContentItem`).
+
+`[Official]` The runtime contract, in `libksysguard/faces/SensorFaceController.cpp`:
+
+- Discovery: `KPackage::PackageLoader::self()->listPackages("KSysguard/SensorFace")` fills the picker with `plugin.name()` and `plugin.pluginId()`.
+- Loading: `KPackage::PackageLoader::self()->loadPackage("KSysguard/SensorFace", faceId)` resolves one view; an invalid package returns early and leaves the item unrendered.
+- Instantiation is C++-side, through `QQmlComponent(engine, qmlPath)` with `beginCreate()` / `completeCreate()` and a `qobject_cast` to the expected base — **not** a QML `Loader` with a `source:` URL. A plugin's path is only known at runtime, after the package is resolved, so the URL cannot be a static QML property.
+- The controller is constructed as `new SensorFaceController(configGroup, engine, configEngine)`. The library's own loader hands it a **dedicated** `QQmlEngine` for configuration so that the Plasma theme colours are not re-used, and records why in the source (`BUG:483689`); the application instead passes its own engine for both arguments (`libksysguard/faces/FaceLoader.cpp → FaceLoader::Private::setupController`, `plasma-systemmonitor/src/page/FaceLoader.cpp`).
+
+`[Official]` Configuration is layered, and every layer has an owner:
+
+- The app owns the per-item groups `Appearance` (`chartFace`, `Title`, `showTitle`, `updateRateLimit`), `Sensors` (`totalSensors`, `highPrioritySensorIds`, `lowPrioritySensorIds`), `SensorColors`, and `SensorLabels`.
+- The view owns its own keys, namespaced by its plugin id: a shipped page preset reads `[Face-106123380916688][org.kde.ksysguard.piechart][General] showLegend=false` (`plasma-systemmonitor/src/pages/overview.page`).
+- A view that needs structured settings ships `mainconfigxml`, loaded through `KConfigLoader` and exposed as a `KConfigPropertyMap` (`SensorFaceController::reloadFaceConfiguration`).
+- Capabilities are declared by the view in `contents/faceproperties` and read by the app: `SupportsSensors`, `SupportsTotalSensors`, `MaxTotalSensors`, `SupportsSensorsColors`, `SupportsLowPrioritySensors`, and `ForceSaveOnDestroy`.
+
+`[Recommendation]` Writes are batched: the controller holds a single-shot 5 s timer and syncs the appearance and sensors groups together, so a slider drag produces one config write instead of dozens. A view that writes its own config on every property change reintroduces the problem.
+
+`[Official]` Teardown is explicit, because a QML-visible object still referenced by the runtime cannot simply be deleted: `SensorFaceController::~SensorFaceController` calls `markAsClean()` on the groups when it must not sync, reloads the config loader to discard pending changes, and only saves on destruction when the view asked for it with `ForceSaveOnDestroy`. The application states the same constraint in its own code: deleting the face controller with `deleteLater()` "will trigger a crash in the QML runtime because it still has references to the object that do not get cleared", so the old controller is kept alive until a new one exists (`plasma-systemmonitor/src/page/FaceLoader.cpp → FaceLoader::reset`).
+
+`[Recommendation]` Replacing a QML-visible component is a two-step operation: create the successor first, then release the predecessor. Deleting the old object while the engine still holds a reference to it is a crash, not a leak, and `deleteLater()` does not fix it because the reference outlives the event loop turn.
+
+`[Official]` Layout and views are persisted as data, not as code. The page tree is a hierarchy of KConfig groups — `[page]`, `[page][row-0]`, `[page][row-0][column-0]`, `[page][row-0][column-0][section-0]` — with each section pointing at a face instance through `face=Face-<id>`; the shipped defaults are `.page` files in the same KConfig format (`plasma-systemmonitor/src/pages/overview.page`). A saved layout is a `Plasma/Applet` package with `X-Plasma-RootPath: org.kde.plasma.systemmonitor`, installed with `KPackage::PackageJob::install` and rediscovered by scanning `Plasma/Applet` packages for that root path (`SensorFaceController::savePreset`, `PresetsModel::reload`).
+
+`[Official]` Configuration migrations belong in the reader, not in the interface. `SensorFaceControllerPrivate::readSensors` applies a table of regular-expression replacements to legacy sensor ids (`cpu/system/*` → `cpu/all/*`, `mem/*` → `memory/*`, the old network and disk spellings) and writes the corrected ids back to the config on load (`libksysguard/faces/SensorFaceController.cpp → SensorFaceControllerPrivate::readSensors`).
+
+`[Recommendation]` When a plugin-provided view is replaced, check that the new view declares the capabilities the stored configuration assumes. A stored `showLegend` for a view that no longer supports it is silently ignored by the app and looks like a bug in the view.
+
+`[Recommendation]` The whole mechanism is heavier than a widget needs. Reach for it only when the user must choose the rendering, the choice must survive upgrades, and third parties must be able to add views; otherwise ship one rendering and keep the boundary in one file.
+
 ## Version matrix
 
 | Component | Assumed version | How it was established |
@@ -165,6 +211,8 @@ These are the versions this skill was written against, not requirements. A diffe
 - KDE: KConfig API — https://api.kde.org/kconfig-index.html
 - KDE: Plasma API — https://api.kde.org/plasma-index.html
 - KDE: KDE Visual Design Group — https://community.kde.org/KDE_Visual_Design_Group
+- KDE Invent: plasma-systemmonitor, `src/page/` and `src/pages/overview.page` — https://invent.kde.org/plasma/plasma-systemmonitor/-/tree/master/src/page — Accessed: 2026-10-20
+- KDE Invent: libksysguard, `faces/` (SensorFaceController, face packages, QML module) — https://invent.kde.org/plasma/libksysguard/-/tree/master/faces — Accessed: 2026-10-20
 - KDE: KDE Human Interface Guidelines — https://develop.kde.org/hig/
 
 Accessed: 2026-10-20. All URLs returned HTTP 200 on that date. The Developer Guide is a community wiki and contains Plasma 5-era tooling (`metadata.desktop`, `kpackagetool5`); it was used for architecture, not for tooling instructions.

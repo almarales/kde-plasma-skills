@@ -179,6 +179,19 @@ Added during integration on 2026-10-20 after a full-bundle sweep. Every row was 
 | https://doc.qt.io/qt-6/qtquick-statesanimations-states.html | kde-plasma-ui-ux/references/qt-qml-kirigami.md | 200 |
 | https://invent.kde.org/frameworks/ki18n/-/blob/master/docs/programmers-guide.md | kde-plasma-ui-ux/references/qt-qml-kirigami.md | 200 |
 | https://invent.kde.org/frameworks/kirigami/-/raw/v6.8.0/src/platform/units.h | kde-plasma-ui-ux/references/qt-qml-kirigami.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/faces/CMakeLists.txt | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/faces/import/SensorFace.qml | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/faces/SensorFaceController.cpp | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/faces/facepackages/linechart/metadata.json | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/faces/facepackages/linechart/contents/faceproperties | kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/blob/master/faces/packagestructure/sensorfacepackage.cpp | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/libksysguard/-/tree/master/faces/facepackages | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/plasma-systemmonitor/-/blob/master/src/faces/CMakeLists.txt | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/plasma-systemmonitor/-/blob/master/src/page/FaceLoader.cpp | kde-plasma-best-practices/references/plasma-development.md | 200 |
+| https://invent.kde.org/plasma/plasma-systemmonitor/-/blob/master/src/page/FaceControl.qml | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/plasma-systemmonitor/-/blob/master/src/page/FacesModel.cpp | kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/plasma-systemmonitor/-/blob/master/src/pages/overview.page | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
+| https://invent.kde.org/plasma/plasma-systemmonitor/-/tree/master/src/page | kde-plasma-best-practices/references/plasma-development.md, kde-plasma-ui-ux/references/configurable-views.md | 200 |
 | https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html | kde-plasma-ui-ux/references/accessibility.md, kde-plasma-ui-ux/references/visual-consistency.md | 200 |
 | https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html | kde-plasma-ui-ux/references/accessibility.md, kde-plasma-ui-ux/references/visual-consistency.md | 200 |
 | https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html | kde-plasma-ui-ux/references/accessibility.md | 200 |

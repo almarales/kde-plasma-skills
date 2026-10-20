@@ -37,6 +37,7 @@ This skill is community material. It is not affiliated with or endorsed by KDE.
 | `references/visual-consistency.md` | Color, typography, icons, metrics, states, contrast, schemes |
 | `references/plasma-components.md` | Component selection, plasmoids, panels, popups, tray, KCMs, Qt Widgets |
 | `references/official-applet-anatomy.md` | Observed anatomy of official Plasma applets: surfaces, typography ladder, numeric rows, states, motion, popup envelope, tray rules, and testable gates |
+| `references/configurable-views.md` | User-selectable renderings: view ownership, capability negotiation, per-view configuration, editable layouts, shareable presets |
 | `references/qt-qml-kirigami.md` | QML/Kirigami implementation mechanics |
 | `references/interaction-patterns.md` | Keyboard, focus, menus, drag/drop, feedback, RTL, motion |
 | `references/accessibility.md` | Accessibility requirements and verification |
