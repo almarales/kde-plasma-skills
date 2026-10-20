@@ -60,6 +60,45 @@ Plasma's own porting documentation describes the structure directly `[Official]`
 
 `[Recommendation]` Treat the metadata file as an API: `KPlugin.Id` is the identity used by configuration, layout, and translations, so changing it migrates no user settings.
 
+## Plasmoid build, install, and test loop
+
+`[Official]` There is no packaging subcommand: a `.plasmoid` is a zip whose root holds `metadata.json` and `contents/`. Do not nest them inside an extra directory, or installation fails.
+
+```bash
+cd my-plasmoid/package
+zip -r ../../my-plasmoid-1.0.0.plasmoid metadata.json contents
+unzip -l ../../my-plasmoid-1.0.0.plasmoid                 # metadata.json must be at the root
+unzip -p ../../my-plasmoid-1.0.0.plasmoid metadata.json | jq .KPlugin
+```
+
+`[Observed]` `kpackagetool6 --help` on the verification machine lists `-t/--type`, `-i/--install`, `-u/--upgrade`, `-r/--remove`, `-l/--list`, and `-g/--global`:
+
+```bash
+kpackagetool6 -t Plasma/Applet -i my-plasmoid-1.0.0.plasmoid   # install
+kpackagetool6 -t Plasma/Applet -u my-plasmoid-1.0.0.plasmoid   # upgrade after a rebuild
+kpackagetool6 -t Plasma/Applet -r com.example.my-plasmoid      # remove by KPlugin.Id
+kpackagetool6 -t Plasma/Applet -l                              # list installed
+sudo kpackagetool6 -g -t Plasma/Applet -i my-plasmoid-1.0.0.plasmoid   # all users
+```
+
+`[Observed]` `plasmapkg2` is absent on the verification machine and belongs to Plasma 5 tooling; do not mix it with `kpackagetool6`.
+
+`[Official]` `plasmoidviewer` (from the `plasma-sdk` package) runs an unpacked package without installing it; `plasmawindowed` needs the widget installed under `~/.local/share/plasma/plasmoids` and preserves configuration changes, so use it to test save and restore:
+
+```bash
+plasmoidviewer -a ./package                            # defaults: floating location, planar form factor
+plasmoidviewer -a ./package -f horizontal -l topedge   # panel form factor
+QT_SCALE_FACTOR=2 plasmoidviewer -a ./package          # HiDPI check
+plasmawindowed com.example.my-plasmoid                 # installed widget, remembers config
+systemctl --user restart plasma-plasmashell.service    # real shell after install
+```
+
+`[Official]` `-f` accepts `horizontal`, `vertical`, `mediacenter`, `planar`, `application`; `-l` accepts `floating`, `desktop`, `fullscreen`, `topedge`, `bottomedge`, `leftedge`, `rightedge`. `--location=desktop` is the desktop wallpaper containment, not a desktop widget.
+
+`[Official]` QML `console.log()` output is hidden by default: enable it with `QT_LOGGING_RULES="qml.debug=true" plasmoidviewer -a ./package`, or persistently with `qml.debug=true` under `[Rules]` in `~/.config/QtProject/qtlogging.ini`. The official page still shows `kwriteconfig5` for that file; on Plasma 6 use `kwriteconfig6`. `journalctl --user -u plasma-plasmashell.service -f` follows the shell log.
+
+`[Recommendation]` Diagnose in this order: widget missing from *Add Widgets* means invalid `metadata.json` or a missing `"KPackageStructure": "Plasma/Applet"`; installation failure means `metadata.json` is not at the archive root; settings that do not persist mean `main.xml` entry names and `cfg_` aliases diverge, or the test ran under `plasmoidviewer` instead of `plasmawindowed`.
+
 ## Configuration
 
 `[Recommendation]` Keep three things separate:
@@ -69,6 +108,8 @@ Plasma's own porting documentation describes the structure directly `[Official]`
 3. **Runtime access** — the widget reads its settings through the configuration object the Plasma stack provides, not by opening a `KConfig` file directly.
 
 The KDE widget documentation covers the configuration UI and KConfigXT flow `[Official]`. `[Observed]` A `KConfig` object opened without isolation reads the user's real configuration; tests must set `QStandardPaths` test mode or an isolated `HOME` (see `rules/testing/integration-tests.md`).
+
+`[Official]` Every `main.xml` value is exposed on the config page as a top-level `cfg_<entry>` property. Declare one `property alias cfg_showLabel: showLabel.checked` per key; that indirection is what gives Apply and Discard its transaction. Assigning to `plasmoid.configuration.<key>` from the page instead writes immediately and skips Apply, so pick one model per page rather than mixing them. The official page's samples still use versioned `QtQuick 2.0` and `org.kde.kirigami 2.4` imports; target Plasma 6 uses unversioned imports.
 
 ## KCMs (System Settings modules)
 

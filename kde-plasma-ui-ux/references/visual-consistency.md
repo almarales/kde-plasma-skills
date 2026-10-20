@@ -83,6 +83,7 @@ Every interactive control must define all applicable states. A missing state is 
 - [Official] A color set applies recursively to children. Set `Kirigami.Theme.inherit: false` when forcing a different set, and re-check every nested control afterward.
 - [Recommendation] Avoid assumptions that "background is light" or "text is dark". Both invert under dark schemes and can invert again under custom schemes.
 - [Recommendation] Check translucent or blurred surfaces against multiple wallpapers and color schemes; transparency can destroy contrast even when the base palette is correct.
+- [Recommendation] An alpha channel does not blur anything by itself. KWin blurs only the regions a client declares, and for a widget that is the Plasma theme background frame; a translucent surface over `NoBackground` is translucent *without* blur. For the blurred case, keep the theme background hints and let the card supply only a tint. Verify in a real session: desktop widgets and panel popups do not necessarily behave the same.
 
 ## Visual hierarchy
 
