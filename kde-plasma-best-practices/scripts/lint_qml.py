@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: LGPL-2.0-or-later
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright the original author of the kde-plasma-design project.
+#
+# Developed originally in the kde-plasma-design project under
+# LGPL-2.0-or-later, and relicensed to Apache-2.0 by the copyright holder
+# for this bundle, so that the whole bundle ships under one license.
 #
 # Derived from the `kde-plasma-design` linter (same project family). The rule
 # catalogue was re-keyed to the rules stated in the kde-plasma-skills bundle;

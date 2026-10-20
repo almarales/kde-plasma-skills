@@ -218,9 +218,6 @@ rather than deleting the history.
 ## License
 
 The skill content in this directory is licensed under the **Apache License 2.0** (see
-`LICENSE`). The one exception is `kde-plasma-best-practices/scripts/lint_qml.py`, which is
-LGPL-2.0-or-later; it runs as a separate process and is not linked into the Apache-2.0
-material, so the two can coexist in one distribution. The rest of the HyaloNet repository
-remains under its own GPL-3.0 license.
+`LICENSE`). The rest of the HyaloNet repository remains under its own GPL-3.0 license.
 KDE, Plasma, Kirigami, and Breeze are trademarks or projects of their respective owners;
 this bundle claims no affiliation.
