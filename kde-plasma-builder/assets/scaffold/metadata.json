@@ -1,0 +1,19 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Your Name"
+            }
+        ],
+        "Category": "Utility",
+        "Description": "One sentence that says what the widget does.",
+        "Icon": "utilities-system-monitor",
+        "Id": "com.example.mywidget",
+        "License": "Apache-2.0",
+        "Name": "My Widget",
+        "Version": "1.0",
+        "Website": "https://example.org/mywidget"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

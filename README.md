@@ -1,6 +1,6 @@
 # KDE Plasma Engineering Skills
 
-Two independent, complementary skills for AI coding agents and developers working on
+Three independent, complementary skills for AI coding agents and developers working on
 KDE Plasma interfaces and implementations.
 
 > **Status:** community engineering resource. These skills are **not** affiliated with,
@@ -11,19 +11,21 @@ KDE Plasma interfaces and implementations.
 | --- | --- | --- |
 | [`kde-plasma-ui-ux`](kde-plasma-ui-ux/SKILL.md) | Design, implement, and review interfaces coherent with Plasma's visual language, interaction patterns, and accessibility expectations. | User experience and consistency |
 | [`kde-plasma-best-practices`](kde-plasma-best-practices/SKILL.md) | Audit and improve Qt/C++/QML/Kirigami implementation quality: responsiveness, ownership, bindings, architecture, build, and tests. | Implementation quality and reliability |
+| [`kde-plasma-builder`](kde-plasma-builder/SKILL.md) | Take a widget from an empty directory to a published one: backend choice, scaffold, metadata, configuration, packaging, install, test, publish. | The path and the hand-offs |
 
 ## Scope and non-goals
 
 **In scope:** the Plasma desktop shell (panels, widgets/plasmoids, launchers, system tray,
 popups), System Settings modules (KCMs), Plasma-native dialogs, Breeze conventions, Qt
 Widgets, Qt Quick/QML, Kirigami, Plasma-specific components, accessibility, keyboard/focus
-behavior, scaling, localization, theming, visual consistency, and code/design review.
+behavior, scaling, localization, theming, visual consistency, code/design review, and the
+path that takes a widget from an empty directory to a published one.
 
 **Out of scope:** generic web dashboards, SaaS layouts, marketing pages, mobile-app
 conventions, and framework-agnostic design trends. The UI/UX skill must not import web
 fashion into Plasma without a documented, evidence-based justification.
 
-## Why two skills
+## Why three skills
 
 They answer different questions and must not silently override each other:
 
@@ -31,6 +33,9 @@ They answer different questions and must not silently override each other:
   interaction, states, accessibility, and adherence to KDE conventions.
 - `kde-plasma-best-practices` decides **how to implement it well**: thread affinity,
   ownership, bindings, model/delegate cost, build integration, and tests.
+- `kde-plasma-builder` decides **in which order a widget gets built**: backend, scaffold,
+  metadata, configuration, packaging, install, test, publish — and routes each step to the
+  skill that owns the rules for it.
 
 Coordination policy:
 
@@ -67,23 +72,29 @@ Detailed material is loaded on demand.
 │   │                          # accessibility, configurable views,
 │   │                          # future proposals, review
 │   └── assets/                # design-proposal and ui-review templates
-└── kde-plasma-best-practices/
+├── kde-plasma-best-practices/
+│   ├── SKILL.md
+│   ├── README.md
+│   ├── LICENSE
+│   ├── assets/
+│   │   └── audit-report.md    # template for a written audit with a verdict
+│   ├── scripts/
+│   │   └── lint_qml.py        # checker for the machine-checkable subset
+│   └── references/
+│       ├── rules/             # P0-P3 rule catalog (performance, qml, cpp,
+│       │                      # architecture, build, testing)
+│       ├── qt-quick-performance.md
+│       ├── plasma-development.md
+│       ├── rule-authoring.md
+│       ├── audit-criteria.md  # audit scope, severity, required checks, verdicts
+│       ├── forward-compatibility.md  # staying on the public Plasma surface
+│       └── sources.md
+└── kde-plasma-builder/
     ├── SKILL.md
     ├── README.md
     ├── LICENSE
-    ├── assets/
-    │   └── audit-report.md    # template for a written audit with a verdict
-    ├── scripts/
-    │   └── lint_qml.py        # checker for the machine-checkable subset
-    └── references/
-        ├── rules/             # P0-P3 rule catalog (performance, qml, cpp,
-        │                      # architecture, build, testing)
-        ├── qt-quick-performance.md
-        ├── plasma-development.md
-        ├── rule-authoring.md
-        ├── audit-criteria.md  # audit scope, severity, required checks, verdicts
-        ├── forward-compatibility.md  # staying on the public Plasma surface
-        └── sources.md
+    ├── references/            # lifecycle, backends
+    └── assets/scaffold/       # copy-paste starting point for a widget
 ```
 
 ## Install and activate
@@ -97,6 +108,7 @@ The exact scanned root depends on the agent. Common choices:
 mkdir -p .agents/skills
 cp -r kde-plasma-ui-ux .agents/skills/
 cp -r kde-plasma-best-practices .agents/skills/
+cp -r kde-plasma-builder .agents/skills/
 gentle-ai skill-registry refresh
 ```
 
@@ -107,6 +119,7 @@ gentle-ai skill-registry refresh
 mkdir -p ~/.config/agents/skills
 cp -r kde-plasma-ui-ux ~/.config/agents/skills/
 cp -r kde-plasma-best-practices ~/.config/agents/skills/
+cp -r kde-plasma-builder ~/.config/agents/skills/
 gentle-ai skill-registry refresh
 ```
 
@@ -123,12 +136,13 @@ their `description` triggers. Example prompts:
 - "This panel animation stutters; find the GUI-thread or binding cause."
 - "Review this C++/QML boundary for ownership and lifetime bugs."
 - "Audit this change and give me a written verdict with the open findings."
+- "Build me a Plasma 6 widget and get it installable."
 - "Let the user pick how each metric is drawn, and keep that choice across sessions."
 - "Evaluate this Plasma 7 concept without treating it as official."
 
 ## Validation
 
-These skills are documentation, and their validation is structural and editorial. One exception: `kde-plasma-best-practices/scripts/lint_qml.py` is an executable checker for the rules the bundle states, and it is validated by running it.
+These skills are documentation, and their validation is structural and editorial. Two checks are functional: the checker in `kde-plasma-best-practices/scripts/lint_qml.py`, and the scaffold in `kde-plasma-builder/assets/scaffold/`, which must produce zero findings when run through that checker.
 Run at minimum:
 
 ```bash
