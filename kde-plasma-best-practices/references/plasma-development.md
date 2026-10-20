@@ -1,0 +1,129 @@
+# Plasma development map
+
+Scope: a working map of how a Plasma 6 desktop is assembled and where a change belongs — shell, containment, applet, package, configuration, KCM, plugin. It is an orientation document for engineers and review agents, not a tutorial replacement for the KDE developer documentation.
+
+Target assumptions: Plasma 6.8.0, Qt 6.11.1, KF6 (ECM 6.31.0), verified 2026-10-20. Plasma's QML API and package format have changed between major versions, so every claim below is paired with what must be re-verified on a different target.
+
+Evidence labels: `[Official]` documented by KDE or Qt, `[Observed]` reproduced on the verification machine, `[Recommendation]` engineering judgement from this skill, `[Unknown]` not verified.
+
+## The object model
+
+Plasma's own porting documentation describes the structure directly `[Official]`:
+
+- A plasmoid's base is a C++ class `Applet`, which is a `QObject`.
+- Applets are contained in an `Applet` subclass called `Containment`, which manages the lifecycle of its applets.
+- On Plasma Desktop, each screen has one containment for its desktop area and another for each panel.
+- The root of the QML side is a C++ `QQuickItem` implementation called `AppletInterface`; if the plasmoid is also a containment, the root is `ContainmentItem`, a subclass of `ContainmentInterface`.
+- In Plasma 6 the root QML object must be a `PlasmoidItem` (the QML name for `AppletInterface`), or `ContainmentItem` for a containment.
+- `AppletInterface` and `ContainmentInterface` now expose only Qt Quick–specific API; the wrapper properties were removed, and the `Plasmoid` attached property is an instance of the underlying `Applet`.
+
+`[Observed]` The installed desktop containment is the package `org.kde.desktopcontainment`, installed at `/usr/share/plasma/plasmoids/org.kde.desktopcontainment` with `metadata.json` and `contents/ui/main.qml`. The shell itself is `org.kde.plasma.desktop` under `/usr/share/plasma/shells`, and panel arrangements ship as layout templates (for example `org.kde.plasma.desktop.defaultPanel`) under `/usr/share/plasma/layout-templates`.
+
+`[Recommendation]` When deciding where a change belongs, ask which of these objects owns the state: a widget that only draws belongs in an applet package; a panel behaviour belongs in the shell or containment; anything that must exist without a widget belongs in a background service or the shell.
+
+## QML API surface in Plasma 6
+
+| Import | What it provides | Notes |
+| --- | --- | --- |
+| `org.kde.plasma.components` | Plasma-styled controls (buttons, sliders, list items) | Module present on the verification machine `[Observed]`; the porting guide documents which Plasma 5 components to replace `[Official]` |
+| `org.kde.plasma.extras` | Plasmoid-level helpers such as config pages and expandable list items | Module present on the verification machine `[Observed]` |
+| `org.kde.plasma.core` | `PlasmaCore` primitives (theme, units) | Module present `[Observed]`; `PlasmaCore.SortFilterModel` moved to `KItemModels.KSortFilterProxyModel` in Plasma 6 `[Official]` |
+| `org.kde.kirigami` | Kirigami components for apps and KCMs | Kirigami is a KF6 framework, usable outside Plasma `[Official]` |
+| `org.kde.plasma.plasma5support` | Compatibility layer for Plasma 5 APIs during porting | A migration aid, not a destination `[Official]` |
+
+`[Official]` The porting guide states that QML module imports should be un-versioned in Qt 6; keeping versions is unnecessary and can cause bugs.
+
+`[Recommendation]` Do not infer the available imports from a Plasma 5 tutorial. Enumerate the imports actually present in the target environment (`/usr/lib/*/qt6/qml`, or the QML import paths reported by the running shell) before writing an import line.
+
+## Package format (KPackage)
+
+`[Observed]` An installed plasmoid on the verification machine looks like this:
+
+```text
+/usr/share/plasma/plasmoids/<plugin-id>/
+├── metadata.json
+└── contents/
+    ├── ui/main.qml
+    ├── config/main.xml
+    └── config/config.qml      # when the widget is configurable
+```
+
+`[Official]` Requirements for Plasma 6 metadata, per the porting guide:
+
+- All plasmoids must use JSON metadata; a legacy `.desktop` file can be converted with the `desktoptojson` utility.
+- `"X-Plasma-API-Minimum-Version": "6.0"` must be present, otherwise the plasmoid is treated as Plasma 5 only and is not offered in the UI.
+- `X-Plasma-MainScript` must be removed: `ui/main.qml` is always the entry point.
+- `X-Plasma-API` must be removed.
+- `ServiceTypes` must be replaced by a top-level `"KPackageStructure": "Plasma/Applet"`.
+
+`[Observed]` A real installed `metadata.json` contains `KPackageStructure`, and a `KPlugin` object with `Id`, `Name`, `Description`, `Icon`, `License`, `Category`, `Website`, `EnabledByDefault`, and a localized `Authors` array, plus `X-Plasma-API-Minimum-Version: "6.0"`.
+
+`[Recommendation]` Treat the metadata file as an API: `KPlugin.Id` is the identity used by configuration, layout, and translations, so changing it migrates no user settings.
+
+## Configuration
+
+`[Recommendation]` Keep three things separate:
+
+1. **Schema** — `contents/config/main.xml` (KConfigXT) declares the keys, types, and defaults.
+2. **UI** — `contents/config/config.qml` declares the configuration pages.
+3. **Runtime access** — the widget reads its settings through the configuration object the Plasma stack provides, not by opening a `KConfig` file directly.
+
+The KDE widget documentation covers the configuration UI and KConfigXT flow `[Official]`. `[Observed]` A `KConfig` object opened without isolation reads the user's real configuration; tests must set `QStandardPaths` test mode or an isolated `HOME` (see `rules/testing/integration-tests.md`).
+
+## KCMs (System Settings modules)
+
+`[Official]` A KCM is a plugin loaded by System Settings, not a standalone application. KF6 KCMUtils provides `KCModule`, `KCModuleLoader`, `KCMultiDialog`, and `KPluginWidget`, and CMake helpers `kcmutils_add_qml_kcm`, `kcmutils_generate_module_data`, and `kcmutils_generate_desktop_file`. `[Observed]` The same installation also exposes `__kcmutils_target_qml_sources`, but the double underscore marks it internal: use `kcmutils_add_qml_kcm` instead.
+
+`[Observed]` On KF6 6.31.0 the Qt Quick KCM bases are `KQuickConfigModule` (`KCMUtilsQuick/kquickconfigmodule.h`) and `KQuickManagedConfigModule` (`kquickmanagedconfigmodule.h`, since 6.0). Availability still depends on the KCMUtils build and on whether the Qt Quick KCM support is packaged, so verify the headers actually present before writing `#include`s.
+
+`[Recommendation]` A KCM should apply changes through the same API the application uses, handle defaults and reset explicitly, and never assume it owns the process. Test it by instantiating the module directly rather than by driving System Settings.
+
+## Plugins and factories
+
+`[Observed]` KF6 KCoreAddons provides `KPluginFactory` with the `K_PLUGIN_FACTORY`, `K_PLUGIN_FACTORY_DEFINITION`, and `K_PLUGIN_FACTORY_WITH_JSON` macros.
+
+`[Recommendation]` Use a factory plus an interface, and construct through the factory's API rather than by naming a concrete class at the call site. A factory whose result is immediately downcast is a linked dependency with extra steps (see `rules/architecture/module-boundaries.md`).
+
+## Version matrix
+
+| Component | Assumed version | How it was established |
+| --- | --- | --- |
+| Plasma | 6.8.0 | `plasmashell --version` `[Observed]` |
+| Qt | 6.11.1 | `qmake6 -query QT_VERSION`, `pkg-config --modversion Qt6Core` `[Observed]` |
+| KF6 / ECM | 6.31.0 | `ECMConfigVersion.cmake` `[Observed]` |
+| `qmllint6` | 6.11.1 (Qt 6) | `qmllint6 --version` `[Observed]`; the unversioned `qmllint` is a `qtchooser` wrapper that reports `1.0` and runs Qt 5 |
+| `kpackagetool6`, `plasmoidviewer`, `plasmawindowed` | present | `which` `[Observed]` |
+| clazy, clang-tidy | not installed | `which` returned nothing `[Observed]` |
+
+These are the versions this skill was written against, not requirements. A different checkout must restate them from its own environment.
+
+## What must be verified per target version
+
+- **QML imports and their names.** `org.kde.plasma.components` replaced the Plasma 5 import; other modules moved or were absorbed. Enumerate the target's import paths.
+- **Metadata keys.** `KPackageStructure`, `X-Plasma-API-Minimum-Version`, and the removal of `X-Plasma-MainScript`/`X-Plasma-API` are Plasma 6 requirements; older or newer branches may differ.
+- **Root element.** `PlasmoidItem`/`ContainmentItem` are Plasma 6 roots; Plasma 5 material uses a plain `Item` plus the `plasmoid` context property.
+- **Tool names.** `kpackagetool6` and `desktoptojson` replace Plasma 5 tooling; tutorials frequently still show `kpackagetool5`.
+- **KCM base classes and CMake helpers.** Confirm against installed headers.
+- **Translation domain.** The widget documentation describes a `plasma_applet_<plugin-id>` domain, but that material predates Plasma 6; check the domain your build actually produces.
+- **Deprecation state of compatibility modules.** `org.kde.plasma.plasma5support` exists to ease porting and is not a long-term target.
+
+## Sources
+
+- KDE: Plasma/DeveloperGuide — https://community.kde.org/Plasma/DeveloperGuide
+- KDE: Porting Plasmoids to KF6 — https://develop.kde.org/docs/plasma/widget/porting_kf6/
+- KDE: Plasma Widget tutorial (index) — https://develop.kde.org/docs/plasma/widget/
+- KDE: Plasma Widget tutorial — setup — https://develop.kde.org/docs/plasma/widget/setup/
+- KDE: Plasma Widget tutorial — configuration — https://develop.kde.org/docs/plasma/widget/configuration/
+- KDE: Plasma Widget tutorial — properties — https://develop.kde.org/docs/plasma/widget/properties/
+- KDE: Plasma Widget tutorial — testing — https://develop.kde.org/docs/plasma/widget/testing/
+- KDE: Plasma Widget tutorial — translations/i18n — https://develop.kde.org/docs/plasma/widget/translations-i18n/
+- KDE: Plasma developer documentation index — https://develop.kde.org/docs/plasma/
+- KDE: Kirigami documentation — https://develop.kde.org/frameworks/kirigami/
+- KDE: KCMUtils API — https://api.kde.org/kcmutils-index.html
+- KDE: KPackage API — https://api.kde.org/kpackage-index.html
+- KDE: KConfig API — https://api.kde.org/kconfig-index.html
+- KDE: Plasma API — https://api.kde.org/plasma-index.html
+- KDE: KDE Visual Design Group — https://community.kde.org/KDE_Visual_Design_Group
+- KDE: KDE Human Interface Guidelines — https://develop.kde.org/hig/
+
+Accessed: 2026-10-20. All URLs returned HTTP 200 on that date. The Developer Guide is a community wiki and contains Plasma 5-era tooling (`metadata.desktop`, `kpackagetool5`); it was used for architecture, not for tooling instructions.
