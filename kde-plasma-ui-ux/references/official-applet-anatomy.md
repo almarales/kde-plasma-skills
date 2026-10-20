@@ -160,7 +160,7 @@ Status is `Plasmoid.status` (`ActiveStatus`/`PassiveStatus`) plus a symbolic ico
 
 ## Testable rules
 
-Express these as repository tests or `grep` gates; they are the cheapest way to keep a codebase inside the grammar.
+Express these as repository tests or `grep` gates; they are the cheapest way to keep a codebase inside the grammar. The checker in `../kde-plasma-best-practices/scripts/lint_qml.py` automates gates 1, 2, 4, 6 and 8, and reports the role-plus-alpha form of gate 1 as informational, because only the project knows whether that surface is on its documented allowlist.
 
 1. No literal colors in `contents/ui`: `grep -rnE '#[0-9A-Fa-f]{3,8}|Qt\.rgba?\('` returns nothing outside a documented allowlist.
 2. No custom material: `grep -rnE 'Gradient|MultiEffect|DropShadow|FastBlur|layer\.effect'` returns nothing.

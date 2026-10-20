@@ -73,6 +73,8 @@ Detailed material is loaded on demand.
     ├── LICENSE
     ├── assets/
     │   └── audit-report.md    # template for a written audit with a verdict
+    ├── scripts/
+    │   └── lint_qml.py        # checker for the machine-checkable subset
     └── references/
         ├── rules/             # P0-P3 rule catalog (performance, qml, cpp,
         │                      # architecture, build, testing)
@@ -80,6 +82,7 @@ Detailed material is loaded on demand.
         ├── plasma-development.md
         ├── rule-authoring.md
         ├── audit-criteria.md  # audit scope, severity, required checks, verdicts
+        ├── forward-compatibility.md  # staying on the public Plasma surface
         └── sources.md
 ```
 
@@ -125,7 +128,7 @@ their `description` triggers. Example prompts:
 
 ## Validation
 
-There is no executable behavior in these skills; validation is structural and editorial.
+These skills are documentation, and their validation is structural and editorial. One exception: `kde-plasma-best-practices/scripts/lint_qml.py` is an executable checker for the rules the bundle states, and it is validated by running it.
 Run at minimum:
 
 ```bash
@@ -194,6 +197,9 @@ rather than deleting the history.
 ## License
 
 The skill content in this directory is licensed under the **Apache License 2.0** (see
-`LICENSE`). The rest of the HyaloNet repository remains under its own GPL-3.0 license.
+`LICENSE`). The one exception is `kde-plasma-best-practices/scripts/lint_qml.py`, which is
+LGPL-2.0-or-later; it runs as a separate process and is not linked into the Apache-2.0
+material, so the two can coexist in one distribution. The rest of the HyaloNet repository
+remains under its own GPL-3.0 license.
 KDE, Plasma, Kirigami, and Breeze are trademarks or projects of their respective owners;
 this bundle claims no affiliation.

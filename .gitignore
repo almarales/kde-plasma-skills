@@ -1,2 +1,6 @@
 # Local AI runtime state (skill registry cache, absolute machine paths)
 .atl/
+
+# Python bytecode cache
+__pycache__/
+*.pyc

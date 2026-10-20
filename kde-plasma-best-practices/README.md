@@ -43,8 +43,10 @@ Non-goals:
 | [`references/plasma-development.md`](references/plasma-development.md) | Plasma 6 architecture, imports, `metadata.json`, version matrix, pluggable view packages |
 | [`references/rule-authoring.md`](references/rule-authoring.md) | Eligibility test, evidence labels, merge/split/discard policy |
 | [`references/audit-criteria.md`](references/audit-criteria.md) | Audit scope, severity derivation, required checks, verdict rules |
+| [`references/forward-compatibility.md`](references/forward-compatibility.md) | The public-surface contract: removed APIs, un-versioned imports, private modules, `metadata.json` |
 | [`references/sources.md`](references/sources.md) | Every cited URL with status and access date, plus local observations |
 | [`assets/audit-report.md`](assets/audit-report.md) | Template for a written audit with a verdict |
+| [`scripts/lint_qml.py`](scripts/lint_qml.py) | Heuristic checker for the machine-checkable subset of the rules |
 
 ## Rule catalog at a glance
 
@@ -127,7 +129,7 @@ Substantive claims are labelled `[Official]`, `[Observed]`, `[Recommendation]`, 
 
 ## Validation and maintenance
 
-Validation is structural and editorial; there is no executable behavior in this bundle.
+Validation is structural and editorial, with one executable exception: `scripts/lint_qml.py` is validated by running it. It enforces the machine-checkable subset of the rules and cites, for every finding, the reference that states the rule it enforces.
 
 1. Parse each rule's YAML frontmatter; confirm `title`, `impact` in P0–P3, `scope`, and `tags`.
 2. Confirm all nine sections are present in order and the file is 40–90 lines.
@@ -175,5 +177,7 @@ Do not silently widen a rule to cover a new release. State the supported version
 ## License
 
 The skill text is licensed under **Apache-2.0**. See `LICENSE` in this directory. Apache-2.0 is used for portability with the agent-skill ecosystem; application code in this repository remains under its own license (GPL-3.0 unless stated otherwise), and the skill license does not relicense that code.
+
+One file is an exception: `scripts/lint_qml.py` is **LGPL-2.0-or-later**. It is invoked as a separate process and is not linked into the Apache-2.0 material, so both licenses coexist in this directory.
 
 KDE, Plasma, Kirigami, and Breeze are trademarks or project names of their respective owners. This skill is an independent community resource: it is **not affiliated with, endorsed by, or approved by KDE**.

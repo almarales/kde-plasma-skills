@@ -46,6 +46,7 @@ Target baseline: Plasma 6.8.0, Qt 6.11.1, KF6 (local, 2026-10-20). Verify agains
 | QML/Kirigami implementation mechanics | `references/qt-qml-kirigami.md` |
 | Future or Plasma 7 proposals | `references/plasma-future-proposals.md` |
 | Pre-delivery review | `references/review-checklist.md` |
+| Keeping the widget on the public surface so it survives the next Plasma release | `../kde-plasma-best-practices/references/forward-compatibility.md` |
 | Performance, lifetime, architecture | `../kde-plasma-best-practices/SKILL.md` |
 
 ## Execution Steps

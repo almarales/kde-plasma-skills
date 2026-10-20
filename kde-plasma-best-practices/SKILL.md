@@ -38,17 +38,19 @@ Not for non-Qt code or uninspected approvals.
 | C++, ownership, threads, shutdown | `cpp/` rules in `references/rules/_sections.md` |
 | Pluggable views, plugin-provided renderings, KPackage structures, reusing OS components in a plasmoid | `references/plasma-development.md` |
 | A formal audit with a written verdict | `references/audit-criteria.md`, `assets/audit-report.md` |
+| A widget that must survive the next Plasma release: removed APIs, imports, metadata | `references/forward-compatibility.md`, `scripts/lint_qml.py` |
 
-Bare paths are relative to `references/rules/`; `references/…` and `assets/…` are relative to this skill's root.
+Bare paths are relative to `references/rules/`; `references/…` and `assets/…` to the skill root.
 
 ## Execution Steps
 
 1. Read `references/rules/_sections.md` and select only the rules the diff touches.
 2. Read each selected rule before judging code; check its version notes against the target branch.
-3. Measure or reproduce a performance problem before recommending a change.
-4. Report `path:line`, rule, impact, mechanism, smallest fix.
-5. Defer visual and accessibility goals to `kde-plasma-ui-ux`.
-6. Keep unknowns visible; invent no APIs or numbers.
+3. Run `scripts/lint_qml.py` on the changed QML and `metadata.json`; report its findings with the command and output. A floor, not a verdict.
+4. Measure or reproduce a performance problem before recommending a change.
+5. Report `path:line`, rule, impact, mechanism, smallest fix.
+6. Defer visual and accessibility goals to `kde-plasma-ui-ux`.
+7. Keep unknowns visible; invent no APIs or numbers.
 
 ## Output Contract
 
@@ -57,19 +59,16 @@ Return:
 - Findings with `path:line`, why it matters, and the preferred fix.
 - Measurements: exact command, environment, before and after.
 - Trade-offs accepted and checks still unverified.
+- Checker output, when the checker ran: the command and its findings, separate from the reviewer's own.
 
-A formal audit is written with `assets/audit-report.md` and follows `references/audit-criteria.md`: the severity of a finding is the violated rule's `impact`, the verdict is `pass`, `fail`, or `inconclusive`, and an audit without inspected evidence is `inconclusive`, never a pass.
+A formal audit uses `assets/audit-report.md` and `references/audit-criteria.md`: a finding's severity is the violated rule's `impact`, the verdict is `pass`, `fail`, or `inconclusive`, and an audit without inspected evidence is `inconclusive`.
 
 ## References
 
-- `references/rules/_sections.md` — rule index by area, impact, and tags.
-- `references/rules/_template.md` — required rule format.
-- `references/rules/performance/` — GUI-thread, async, profiling, startup rules.
-- `references/rules/qml/` — declarative QML, bindings, models, Loader, reuse, timer scope.
-- `references/rules/cpp/` — ownership, signals/slots, threading, QML boundary.
-- `references/rules/architecture/` — module boundaries and KDE API compatibility.
-- `references/rules/build/` — CMake, resources/packaging, static analysis.
-- `references/rules/testing/` — unit, integration, and regression tests.
+- `references/rules/_sections.md` — rule index by area, impact, and tags; `references/rules/_template.md` — required rule format.
+- `references/rules/` — the P0-P3 catalog: performance, qml, cpp, architecture, build, testing.
 - `references/qt-quick-performance.md`, `references/plasma-development.md`, `references/rule-authoring.md`, `references/sources.md` — syntheses and verified source ledger.
 - `references/audit-criteria.md` — audit scope, severity derivation, required checks, verdict rules.
-- `assets/audit-report.md` — the template for a written audit with a verdict.
+- `references/forward-compatibility.md` — the public-surface contract for surviving future Plasma releases.
+- `assets/audit-report.md` — template for a written audit with a verdict.
+- `scripts/lint_qml.py` — checker for the machine-checkable subset; each finding cites its rule.

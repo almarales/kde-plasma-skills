@@ -82,6 +82,8 @@ The two skills are independent and complementary:
 
 Do not copy engineering rules into this skill. Link to `../kde-plasma-best-practices/SKILL.md` and its `../kde-plasma-best-practices/references/rules/` instead.
 
+The design rules that are mechanically checkable are automated by `../kde-plasma-best-practices/scripts/lint_qml.py`: literal colors, custom material, numeric spacing, literal font sizes and literal durations (gates 1, 2, 4, 6 and 8 of `references/official-applet-anatomy.md`). The checker cites the rule each finding enforces, so a finding is always traceable to a rule and never to a tool's opinion.
+
 ## Version assumptions
 
 The guidance was verified on 2026-10-20 against a local baseline of:
