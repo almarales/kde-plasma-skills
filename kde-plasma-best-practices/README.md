@@ -81,23 +81,24 @@ The verdict describes the audited revision. It does not authorize delivery, and 
 
 ## Install and activation
 
-Project scope, shared with the repository:
+Install the whole bundle from its root. The installer replaces any previous copy, so an update never mixes two versions of a skill:
 
 ```bash
-mkdir -p .agents/skills/kde-plasma-best-practices
-cp -r /path/to/kde-plasma-best-practices/* .agents/skills/kde-plasma-best-practices/
+/path/to/kde-plasma-skills/install.sh           # user scope
+/path/to/kde-plasma-skills/install.sh --scope project
+```
+
+To install only this skill, copy its directory into the root your agent scans (`~/.agents/skills` for Gentle AI agents), **replacing** the destination rather than merging into it, then refresh the registry:
+
+```bash
+mkdir -p ~/.agents/skills
+rm -rf ~/.agents/skills/kde-plasma-best-practices
+cp -r /path/to/kde-plasma-best-practices ~/.agents/skills/
 gentle-ai skill-registry refresh
 ```
 
-User scope, available across projects:
-
-```bash
-mkdir -p ~/.config/agents/skills/kde-plasma-best-practices
-cp -r /path/to/kde-plasma-best-practices/* ~/.config/agents/skills/kde-plasma-best-practices/
-gentle-ai skill-registry refresh
-```
-
-- Copy the whole directory, including `references/`, because `SKILL.md` links to those files locally.
+- Copy the whole directory, including `references/`, `assets/` and `scripts/`, because `SKILL.md` links to those files locally.
+- Install into one root only. The registry keeps one entry per skill name, so a copy in two roots means one of them silently shadows the other; `install.sh check` reports it.
 - If your agent scans a different skills root, copy the directory there instead and refresh the registry.
 - Start a new agent session if skill discovery is cached at startup.
 - The skill activates on QML performance, GUI-thread stalls, ownership/lifetime, signals and threading, CMake/KF6 integration, and test-related tasks. It needs no slash command.

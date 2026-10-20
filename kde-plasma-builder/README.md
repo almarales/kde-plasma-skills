@@ -34,23 +34,25 @@ Non-goals:
 
 ## Install and activation
 
-Project scope, shared with the repository:
+Install the whole bundle from its root. The installer replaces any previous copy, so an update never mixes two versions of a skill:
 
 ```bash
-mkdir -p .agents/skills/kde-plasma-builder
-cp -r /path/to/kde-plasma-builder/* .agents/skills/kde-plasma-builder/
-gentle-ai skill-registry refresh
+/path/to/kde-plasma-skills/install.sh           # user scope
+/path/to/kde-plasma-skills/install.sh --scope project
 ```
 
-User scope, available across projects:
+To install only this skill, copy its directory into the root your agent scans (`~/.agents/skills` for Gentle AI agents), **replacing** the destination rather than merging into it, then refresh the registry:
 
 ```bash
-mkdir -p ~/.config/agents/skills/kde-plasma-builder
-cp -r /path/to/kde-plasma-builder/* ~/.config/agents/skills/kde-plasma-builder/
+mkdir -p ~/.agents/skills
+rm -rf ~/.agents/skills/kde-plasma-builder
+cp -r /path/to/kde-plasma-builder ~/.agents/skills/
 gentle-ai skill-registry refresh
 ```
 
 Copy the whole directory, including `references/` and `assets/`: the scaffold is part of the contract, and `SKILL.md` links to it locally.
+
+Install into one root only. The registry keeps one entry per skill name, so a copy in two roots means one of them silently shadows the other; `install.sh check` reports it.
 
 ## Relationship to the other skills
 

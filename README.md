@@ -63,6 +63,7 @@ Detailed material is loaded on demand.
 .                              # this bundle root
 ├── README.md                  # this file
 ├── LICENSE                    # Apache-2.0
+├── install.sh                 # install, update, check or remove the bundle
 ├── kde-plasma-ui-ux/
 │   ├── SKILL.md               # activation, rules, routing, output
 │   ├── README.md              # purpose, install, maintenance
@@ -99,33 +100,36 @@ Detailed material is loaded on demand.
 
 ## Install and activate
 
-The exact scanned root depends on the agent. Common choices:
-
-**Project scope** (available only in this repository):
+The installer copies the three skills, replaces any previous copy completely, and refreshes the skill registry:
 
 ```bash
-# run from the root of this bundle
-mkdir -p .agents/skills
-cp -r kde-plasma-ui-ux .agents/skills/
-cp -r kde-plasma-best-practices .agents/skills/
-cp -r kde-plasma-builder .agents/skills/
-gentle-ai skill-registry refresh
+./install.sh                  # install or update, user scope (~/.agents/skills)
+./install.sh --scope project  # install or update, inside this repository
+./install.sh check            # verify the installation and report drift
+./install.sh uninstall        # remove the bundle from the target root
 ```
 
-**User scope** (available in every project for Gentle AI agents):
+**An update replaces the installed copy.** A file removed or renamed upstream does not survive in the installation, so an upgraded skill never mixes two versions of itself.
+
+**Install into one root, not two.** The registry scans several roots (`~/.agents/skills`, `~/.config/agents/skills`, `~/.config/opencode/skills`, `~/.pi/agent/skills`, and others) and keeps one entry per skill name. The same skill present in two roots means one of them silently shadows the other, and the agent loads whichever the registry picked. `./install.sh check` reports exactly that, along with any drift between the bundle and the installed copy.
+
+If your agent scans a different root, pass it explicitly:
 
 ```bash
-# run from the root of this bundle
-mkdir -p ~/.config/agents/skills
-cp -r kde-plasma-ui-ux ~/.config/agents/skills/
-cp -r kde-plasma-best-practices ~/.config/agents/skills/
-cp -r kde-plasma-builder ~/.config/agents/skills/
-gentle-ai skill-registry refresh
+./install.sh --root ~/.config/agents/skills
 ```
 
-Other agents scan different roots (for example `.claude/skills`, `.kiro/skills`,
-`~/.config/opencode/skills`). Copy the skill directory into the root your agent documents;
-do not copy only `SKILL.md`, because the reference files are part of the contract.
+Other agents scan different roots (for example `~/.claude/skills`, `~/.kiro/skills`, `~/.codex/skills`). Copy the three skill directories into the root your agent documents, including `references/`, `assets/` and `scripts/`: they are part of the contract, not decoration. When you copy by hand, replace the destination directory rather than merging into it.
+
+**From a registry.** The bundle is also published as three individual skills, for agents that install from a registry:
+
+```bash
+npx skills add https://github.com/almarales/kde-plasma-skills --skill kde-plasma-ui-ux
+npx skills add https://github.com/almarales/kde-plasma-skills --skill kde-plasma-best-practices
+npx skills add https://github.com/almarales/kde-plasma-skills --skill kde-plasma-builder
+```
+
+Each one installs with its `references/`, `assets/` and `scripts/`. Install the three together if you want the coordination between them: the builder routes to the other two, and the engineering skill owns the checker the UI skill's gates refer to.
 
 After installation, the skills appear in the agent's skill list and are selected from
 their `description` triggers. Example prompts:
@@ -191,8 +195,11 @@ no runnable RED state. Do not claim a check passed without inspecting its output
 - New rules must follow `kde-plasma-best-practices/references/rules/_template.md` and
   `references/rule-authoring.md`. Merge or discard rules that do not add distinct,
   actionable guidance.
-- P0-P3 are this catalog's prioritization convention, not an official KDE taxonomy.
+- P0-P3 are this catalog's prioritization convention, not an official KDE taxonomy. Rule
+  IDs (`BP-<AREA>-<NN>`) are never renumbered and never reused.
 - When documentation and observed code disagree, report both and state which was verified.
+- After changing a skill, run `./install.sh` to update the installed copy, and
+  `./install.sh check` to confirm the installation matches the bundle.
 
 ## Contributing corrections
 

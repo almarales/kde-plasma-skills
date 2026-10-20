@@ -48,23 +48,24 @@ This skill is community material. It is not affiliated with or endorsed by KDE.
 
 ## Install and activation
 
-Project scope, shared with the repository:
+Install the whole bundle from its root. The installer replaces any previous copy, so an update never mixes two versions of a skill:
 
 ```bash
-mkdir -p .agents/skills/kde-plasma-ui-ux
-cp -r /path/to/kde-plasma-ui-ux/* .agents/skills/kde-plasma-ui-ux/
+/path/to/kde-plasma-skills/install.sh           # user scope
+/path/to/kde-plasma-skills/install.sh --scope project
+```
+
+To install only this skill, copy its directory into the root your agent scans (`~/.agents/skills` for Gentle AI agents), **replacing** the destination rather than merging into it, then refresh the registry:
+
+```bash
+mkdir -p ~/.agents/skills
+rm -rf ~/.agents/skills/kde-plasma-ui-ux
+cp -r /path/to/kde-plasma-ui-ux ~/.agents/skills/
 gentle-ai skill-registry refresh
 ```
 
-User scope, available across projects:
-
-```bash
-mkdir -p ~/.config/agents/skills/kde-plasma-ui-ux
-cp -r /path/to/kde-plasma-ui-ux/* ~/.config/agents/skills/kde-plasma-ui-ux/
-gentle-ai skill-registry refresh
-```
-
-- Place the whole directory, including `references/` and `assets/`, because `SKILL.md` links to those files locally.
+- Include the whole directory, including `references/` and `assets/`, because `SKILL.md` links to those files locally.
+- Install into one root only. The registry keeps one entry per skill name, so a copy in two roots means one of them silently shadows the other; `install.sh check` reports it.
 - If your agent scans a different skills root, copy the directory there instead and refresh the registry.
 - Start a new agent session if the current one caches skill discovery at startup.
 - The skill activates on Plasma widget, KCM, panel, tray, Breeze, Kirigami, QML UI, and KDE design-review tasks. It does not need a slash command.
