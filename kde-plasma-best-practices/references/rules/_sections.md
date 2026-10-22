@@ -25,6 +25,7 @@ Every rule labels substantive claims `[Official]`, `[Observed]`, `[Recommendatio
 | `BP-QML-04` | [`qml/loader-usage.md`](qml/loader-usage.md) | P2 | loader, lazy-loading, startup, error-handling | shipped |
 | `BP-QML-05` | [`qml/component-reuse.md`](qml/component-reuse.md) | P2 | components, kirigami, api-design, maintainability | shipped |
 | `BP-QML-06` | [`qml/timer-lifecycle.md`](qml/timer-lifecycle.md) | P2 | timers, animations, visibility, polling, performance | shipped |
+| `BP-QML-07` | [`qml/representation-composition.md`](qml/representation-composition.md) | P2 | plasmoid, representations, composition-root, structure, maintainability | shipped |
 
 ## C++
 

@@ -35,6 +35,7 @@ Not for non-Qt code or uninspected approvals.
 | Deferred creation, `Loader` | `qml/loader-usage.md` |
 | New or forked QML control | `qml/component-reuse.md` |
 | Repeating timer or animation while hidden | `qml/timer-lifecycle.md` |
+| Monolithic `main.qml`, inline representation body, layout logic in the entry file | `qml/representation-composition.md` |
 | C++, ownership, threads, shutdown | `cpp/` rules in `references/rules/_sections.md` |
 | Pluggable views, plugin-provided renderings, KPackage structures, reusing OS components in a plasmoid | `references/plasma-development.md` |
 | A formal audit with a written verdict | `references/audit-criteria.md`, `assets/audit-report.md` |

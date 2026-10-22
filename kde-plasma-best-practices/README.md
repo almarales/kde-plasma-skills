@@ -55,7 +55,7 @@ Non-goals:
 | Area | Rules | Impact |
 |---|---|---|
 | Performance | `blocking-gui-thread`, `async-work`, `profiling-first`, `startup-cost` | P0, P1, P1, P2 |
-| QML | `declarative-bindings`, `binding-overwrites`, `model-delegates`, `loader-usage`, `component-reuse` | P1, P1, P1, P2, P2 |
+| QML | `declarative-bindings`, `binding-overwrites`, `model-delegates`, `loader-usage`, `component-reuse`, `timer-lifecycle`, `representation-composition` | P1, P1, P1, P2, P2, P2, P2 |
 | C++ | `ownership-lifetime`, `signals-slots`, `threading`, `qml-cpp-boundaries` | P0, P1, P0, P1 |
 | Architecture | `module-boundaries`, `kde-api-compatibility` | P1, P1 |
 | Build | `cmake`, `resources-packaging`, `static-analysis` | P2, P2, P2 |

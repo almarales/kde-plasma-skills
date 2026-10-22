@@ -112,7 +112,20 @@ CHECKS = {
     "EN02": ("error", "metadata.json is not valid JSON",
              "Fix the JSON syntax; the package cannot be parsed otherwise.",
              "FWD-04 references/forward-compatibility.md#metadata-json-requirements"),
+    "EN03": ("warning", "Inline representation body in main.qml",
+             "Move the compact/full representation body to its own file under contents/ui/ and reference the type."
+             " The popup subtree then parses and instantiates on the first expand, and main.qml stays the composition root.",
+             "BP-QML-07 references/rules/qml/representation-composition.md"),
+    "EN04": ("warning", "main.qml exceeds 200 lines",
+             "main.qml is the composition root: the PlasmoidItem, configuration bindings, the backend object, and the"
+             " representation assignment. Extract what grew past that into its own component.",
+             "BP-QML-07 references/rules/qml/representation-composition.md"),
 }
+
+# [Recommendation] BP-QML-07 composition-root thresholds; the rule labels them
+# as engineering judgement, not official KDE policy.
+MAIN_QML_MAX_LINES = 200
+REPRESENTATION_BODY_MAX_LINES = 30
 
 NAMED = ("white black red green blue gray grey yellow orange purple cyan magenta pink brown "
          "silver gold navy teal lime maroon olive aqua fuchsia").split()
@@ -135,6 +148,8 @@ RE_GLOW = re.compile(r"\bglowEnabled\b")
 RE_INFINITE = re.compile(r"loops\s*:\s*Animation\.Infinite")
 RE_PRIVATE = re.compile(r"^\s*import\s+org\.kde\.plasma\.private\b")
 RE_P5S = re.compile(r"^\s*import\s+org\.kde\.plasma\.plasma5support\b")
+RE_REPRESENTATION = re.compile(
+    r"\b(compactRepresentation|fullRepresentation)\s*:\s*[\w.$]+\s*\{")
 
 
 def blank_comments(text):
@@ -172,6 +187,24 @@ def blank_comments(text):
         out.append(c)
         i += 1
     return "".join(out)
+
+
+def block_span_lines(text, opening_index):
+    """Whole lines inside the brace block opening at text[opening_index] == '{'.
+
+    Returns None when the block never closes (for example an unbalanced brace
+    inside a string literal), so the caller stays silent instead of guessing.
+    """
+    depth = 0
+    for i in range(opening_index, len(text)):
+        c = text[i]
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                return text.count("\n", opening_index, i)
+    return None
 
 
 def lint_qml(path):
@@ -229,8 +262,17 @@ def lint_qml(path):
     if "compactRepresentation" in text and "Accessible.name" not in text:
         ln = next((i for i, l in enumerate(lines, 1) if "compactRepresentation" in l), 1)
         hit("NS13", ln)
-    if os.path.basename(path) == "main.qml" and "backgroundHints" not in text:
-        hit("NS12", 1)
+    if os.path.basename(path) == "main.qml":
+        if "backgroundHints" not in text:
+            hit("NS12", 1)
+        for m in RE_REPRESENTATION.finditer(text):
+            span = block_span_lines(text, m.end() - 1)
+            if span is not None and span > REPRESENTATION_BODY_MAX_LINES:
+                hit("EN03", text.count("\n", 0, m.start()) + 1,
+                    f"{m.group(1)} spans ~{span} lines inline")
+        line_count = text.count("\n") + (1 if text and not text.endswith("\n") else 0)
+        if line_count > MAIN_QML_MAX_LINES:
+            hit("EN04", 1, f"{line_count} lines")
 
     for m in re.finditer(r"\bTimer\s*\{([^{}]*)\}", text):
         body = m.group(1)
